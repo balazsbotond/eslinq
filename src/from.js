@@ -258,7 +258,7 @@ class Collection {
         const iterable = this.iterable;
         return this._spawn(function* () {
             let c = 0;
-            for (let i of this.iterable) if (++c > count) yield i;
+            for (let i of iterable) if (++c > count) yield i;
         });
     }
     
@@ -266,7 +266,7 @@ class Collection {
         const iterable = this.iterable;
         return this._spawn(function* () {
             let wasFalse = false;
-            for (let i of this.iterable) {
+            for (let i of iterable) {
                 if (wasFalse || !matches(i)) {
                     wasFalse = true;
                     yield i;
