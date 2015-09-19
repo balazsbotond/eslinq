@@ -38,12 +38,6 @@ export default function from(coll) {
     return new Collection(coll);
 }
 
-function compareDefault(a, b) {
-    if (a < b) return -1;
-    if (a > b) return 1;
-    return 0;
-}
-
 class Collection {
     constructor(iterable) {
         if (iterable instanceof Collection) iterable = iterable.iterable;
@@ -344,6 +338,16 @@ class Collection {
 }
 
 /*
+ * Functions used as default arguments
+ */
+
+function compareDefault(a, b) {
+    if (a < b) return -1;
+    if (a > b) return 1;
+    return 0;
+}
+
+/*
  * Argument validation helpers
  */
 
@@ -353,7 +357,7 @@ function ensureIsNumber(n) {
 }
 
 function ensureNotNegative(n, name) {
-    if (n < 0) throw `{name} must not be negative`;
+    if (n < 0) throw `${name} must not be negative`;
 }
 
 function ensureIsDefined(x, message) {
