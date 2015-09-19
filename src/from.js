@@ -325,6 +325,14 @@ class Collection {
             }
         }); 
     }
+    
+    /*
+     * Conversion methods
+     */
+    
+    toArray() {
+        return Array.from(this.iterable);
+    }
 
     /*
      * Private helpers
