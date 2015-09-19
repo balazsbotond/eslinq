@@ -32,6 +32,8 @@
  *
  */
 
+"use strict";
+
 import "babel/polyfill";
 
 export default function from(coll) {
