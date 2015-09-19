@@ -286,6 +286,16 @@ class Collection {
         });
     }
 
+    takeWhile(matches) {
+        const iterable = this.iterable;
+        return this._spawn(function* () {
+            for (let i of iterable) {
+                if (matches(i)) yield i;
+                else break;
+            }
+        }); 
+    }
+
     /*
      * Private helpers
      */
