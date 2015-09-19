@@ -148,6 +148,8 @@ class Collection {
     average(select = n => n) {
         let sum = 0, count = 0;
         for (let i of this.iterable) {
+            if (typeof i !== "number")
+                throw "Only numbers can be averaged";
             sum += select(i);
             count++;
         }
