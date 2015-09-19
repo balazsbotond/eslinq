@@ -226,6 +226,33 @@ class Collection {
             if (matches(i)) { item = i; found = true; }
         return { found, item };
     }
+    
+    single(matches = _ => true) {
+        const result = this._single(matches);
+        if (!result.found)
+            throw "No matching element found";
+        return result.item;
+    }
+    
+    singleOrDefault(matches = _ => true, defaultValue) {
+        const result = this._single(matches);
+        if (!result.found)
+            return defaultValue;
+        return result.item;
+    }
+    
+    _single(matches = _ => true) {
+        let found = false, item;
+        for (let i of this.iterable) {
+            if (matches(i)) {
+                if (found)
+                    throw "Collection contains more than one matching element";
+                item = i;
+                found = true;
+            }
+        }
+        return { found, item };
+    }
 
     /*
      * Private helpers
