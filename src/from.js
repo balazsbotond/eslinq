@@ -274,6 +274,17 @@ class Collection {
             } 
         });
     }
+    
+    take(count) {
+        const iterable = this.iterable;
+        return this._spawn(function* () {
+            let c = 0;
+            for (let i of iterable) {
+                if (++c <= count) yield i;
+                else break;
+            }
+        });
+    }
 
     /*
      * Private helpers
