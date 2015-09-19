@@ -309,6 +309,10 @@ class Collection {
     }
 }
 
+/*
+ * Argument validation helpers
+ */
+
 function ensureIsNumber(n) {
     if (typeof n !== "number")
         throw "Only numbers can be averaged";
@@ -321,6 +325,10 @@ function ensureNotNegative(n, name) {
 function ensureIsDefined(x, message) {
     if (x === undefined) throw message;
 }
+
+/*
+ * Test code, delete later
+ */
 
 const hr = () => { console.log("=====================") };
 
