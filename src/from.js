@@ -253,6 +253,14 @@ class Collection {
         }
         return { found, item };
     }
+    
+    skip(count) {
+        const iterable = this.iterable;
+        return this._spawn(function* () {
+            let c = 0;
+            for (let i of this.iterable) if (++c > count) yield i;
+        });
+    }
 
     /*
      * Private helpers
