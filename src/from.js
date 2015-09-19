@@ -261,6 +261,19 @@ class Collection {
             for (let i of this.iterable) if (++c > count) yield i;
         });
     }
+    
+    skipWhile(matches) {
+        const iterable = this.iterable;
+        return this._spawn(function* () {
+            let wasFalse = false;
+            for (let i of this.iterable) {
+                if (wasFalse || !matches(i)) {
+                    wasFalse = true;
+                    yield i;
+                }
+            } 
+        });
+    }
 
     /*
      * Private helpers
