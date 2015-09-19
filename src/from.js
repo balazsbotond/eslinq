@@ -1,10 +1,10 @@
 import "babel/polyfill";
 
-function from(coll) {
+export function from(coll) {
     return new Collection(coll);
 }
 
-function compareDefault(a, b) {
+export function compareDefault(a, b) {
     if (a < b) return -1;
     if (a > b) return 1;
     return 0;
@@ -56,7 +56,7 @@ class Collection {
         return true;
     }
 
-    any(matches = i => true) {
+    any(matches = _ => true) {
         for (let i of this.iterable) if (matches(i)) return true;
         return false;
     }
@@ -148,16 +148,87 @@ class Collection {
     average(select = n => n) {
         let sum = 0, count = 0;
         for (let i of this.iterable) {
-            if (typeof i !== "number")
-                throw "Only numbers can be averaged";
+            this._ensureIsNumber(i);
             sum += select(i);
             count++;
         }
         return sum / count;
     }
+    
+    sum(select = n => n) {
+        let sum;
+        for (let i of this.iterable) {
+            this._ensureIsNumber(i);
+            sum += select(i);
+        }
+        return sum;
+    }
+    
+    count(matches = _ => true) {
+        let count = 0;
+        for (let i of this.iterable) if (matches(i)) count++;
+        return count;
+    }
 
     /*
      * Paging methods
+     */
+
+    elementAt(index) {
+        ensureNotNegative(index, "index");
+        const element = this._elementAt(index);
+        ensureIsDefined(element, "Index too large");
+        return element;
+    }
+    
+    elementAtOrDefault(index, defaultValue) {
+        ensureNotNegative(index, "index");
+        const element = this._elementAt(index);
+        return element !== undefined ? element : defaultValue;
+    }
+    
+    _elementAt(index) {
+        let i = 0;
+        for (let item of this.iterable) {
+            if (i === index) return i;
+            i++;
+        }
+        return undefined;
+    }
+    
+    first(matches = _ => true) {
+        for (let i of this.iterable) if (matches(i)) return i;
+        throw "No matching element found";
+    }
+    
+    firstOrDefault(matches = _ => true, defaultValue) {
+        for (let i of this.iterable) if (matches(i)) return i;
+        return defaultValue;
+    }
+    
+    last(matches = _ => true) {
+        const result = this._last(matches);
+        if (!result.found)
+            throw "No matching element found";
+        return result.item;
+    }
+    
+    lastOrDefault(matches = _ => true, defaultValue) {
+        const result = this._last(matches);
+        if (!result.found)
+            return defaultValue;
+        return result.item;
+    }
+    
+    _last(matches = _ => true) {
+        let found = false, item;
+        for (let i of this.iterable)
+            if (matches(i)) { item = i; found = true; }
+        return { found, item };
+    }
+
+    /*
+     * Private helpers
      */
 
     _spawn(generator) {
@@ -169,14 +240,27 @@ class Collection {
     }
 }
 
+function ensureIsNumber(n) {
+    if (typeof n !== "number")
+        throw "Only numbers can be averaged";
+}
+
+function ensureNotNegative(n, name) {
+    if (n < 0) throw `{name} must not be negative`;
+}
+
+function ensureIsDefined(x, message) {
+    if (x === undefined) throw message;
+}
+
 const hr = () => { console.log("=====================") };
 
 const numbers = [1, 2, 3, 4, 5];
 
 const squares =
     from(numbers)
-        .where((n) => n % 2 == 0)
-        .select((n) => n * n);
+        .where(n => n % 2 == 0)
+        .select(n => n * n);
 
 squares._log();
 hr();
@@ -190,8 +274,8 @@ const owners = [
 const pets =
     from(owners)
         .selectMany((o) => o.pets)
-        .where((p) => p.includes("o"))
-        .select((p) => p.toUpperCase());
+        .where(p => p.includes("o"))
+        .select(p => p.toUpperCase());
 
 pets._log();
 hr();
