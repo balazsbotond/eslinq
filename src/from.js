@@ -36,8 +36,8 @@
 
 import "babel/polyfill";
 
-export default function from(coll) {
-    return new Collection(coll);
+export default function from(iterable) {
+    return new Collection(iterable);
 }
 
 class Collection {
