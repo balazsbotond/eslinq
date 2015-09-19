@@ -1,10 +1,10 @@
 import "babel/polyfill";
 
-export function from(coll) {
+export default function from(coll) {
     return new Collection(coll);
 }
 
-export function compareDefault(a, b) {
+function compareDefault(a, b) {
     if (a < b) return -1;
     if (a > b) return 1;
     return 0;
