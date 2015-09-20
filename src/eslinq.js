@@ -126,6 +126,19 @@ export class Collection {
         });
     }
 
+    /**
+     * Filters the Collection by a condition specified.
+     * 
+     * @param {function(i: any): boolean} matches A function that returns
+     *     true if an element is to be included in the result.
+     * @return {Collection} A Collection of the elements for which the
+     *     'matches' function returned true.
+     * 
+     * @example
+     * const numbers = [1, 2, 3, 4, 5];
+     * const even = from(numbers).where(n => n % 2 === 0);
+     * for (let n of even) console.log(n); // 2 4
+     */
     where(matches) {
         const iterable = this.iterable;
         return this._spawn(function* () {
