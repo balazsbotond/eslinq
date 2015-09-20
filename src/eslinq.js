@@ -196,6 +196,19 @@ export class Collection {
         return false;
     }
 
+    /**
+     * Determines whether at least one element is equal to the item specified
+     * using the strict equality operator.
+     * 
+     * @param {any} item The item to find.
+     * @return {boolean} true if at least one element is equal to the item
+     *     specified, otherwise, false.
+     * 
+     * @example
+     * const numbers = [1, 2, 3];
+     * from(numbers).contains(n => n % 2 === 0); // true, 2 is even
+     * from(numbers).contains(n => n > 3); // false, all elements less than 3
+     */
     contains(item) {
         for (let i of this.iterable) if (i === item) return true;
         return false;
