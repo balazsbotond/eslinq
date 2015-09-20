@@ -17,6 +17,21 @@ describe("from", () => {
 	it("returns something when given an empty array", () => {
 		expect(from([])).toBeDefined();
 	});
+	
+	describe("can also work with non-array iterables, like", () => {
+
+		const verifyForIterable = (iterable) => {
+			const expected = [2, 4, 6],
+				double = n => n * 2,
+				actual = from(iterable).select(double).toArray();
+			expect(actual).toEqual(expected);
+		};
+		
+		it("a set", () => {
+		 	verifyForIterable(new Set([1, 2, 3]));
+		});
+		
+	});
 
 	describe("select", () => {
 
