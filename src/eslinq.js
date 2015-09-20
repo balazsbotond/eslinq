@@ -34,11 +34,36 @@
 
 "use strict";
 
+/**
+ * Helper function that wraps the specified iterable instance in an
+ * ESLinq Collection which can be queried using ESLinq methods (like
+ * 'select', 'where', etc.).
+ * 
+ * @param {Iterable} iterable An iterable object (like an Array, a Set,
+ *     or any object with a [Symbol.iterator] property).
+ * @return {Collection} An ESLinq collection which can be queried using
+ *     ESLinq methods (like 'select', 'where', etc.).
+ * 
+ * @example
+ * const numbers = [1, 2, 3, 4, 5];
+ * const squaresOfEvenNumbers =
+ *     from(numbers)
+ *         .where(n => n % 2 === 0)
+ *         .select(n => n * n);
+ * for (let n of squaresOfEvenNumbers)
+ *     console.log(n); // 4 16
+ */
 export default function from(iterable) {
     return new Collection(iterable);
 }
 
-class Collection {
+/**
+ * An iterable collection that can be queried using ESLinq methods (like
+ * 'select', 'where', etc.).
+ * 
+ * @implements {Iterable}
+ */
+export class Collection {
     constructor(iterable) {
         if (iterable instanceof Collection) iterable = iterable.iterable;
 
@@ -50,6 +75,19 @@ class Collection {
      * Projection and restriction methods
      */
 
+    /**
+     * Applies the specified transformation to all elements of the
+     * Collection, returning a new Collection of the transformed elements.
+     * 
+     * @param {function(i: any): any} transform A function that is used
+     *     to transform the elements of the collection.
+     * @return {Collection} A new Collection of the transformed elements.
+     * 
+     * @example
+     * const numbers = [1, 2, 3, 4, 5];
+     * const even = from(numbers).select(n => n % 2 === 0);
+     * for (let n of even) console.log(n); // 2 4 
+     */
     select(transform) {
         const iterable = this.iterable;
         return this._spawn(function* () {
@@ -57,6 +95,26 @@ class Collection {
         });
     }
 
+    /**
+     * Applies the specified transformation to all elements of the
+     * Collection. The transformation should return an iterable. The
+     * resulting collection will be a concatenation of these iterables.
+     * 
+     * @param {function(i: any): Iterable} transform A function that is
+     *     called for each Collection element. Should return a iterable.
+     * @return {Collection} A concatenation of the iterables returned by
+     *     the transformation function.
+     * @throws {Error} If the object returned by the transform function
+     *     is not iterable.
+     * 
+     * @example
+     * const taskLists = [
+     *     {tasks: [1]}, {tasks: [2, 3]}, {tasks: [4]},
+     *     {tasks: []}, {tasks: [5]}
+     * ];
+     * const allTasks = from(taskLists).selectMany(t => t.tasks);
+     * for (let t of allTasks) console.log(t); // 1 2 3 4 5
+     */
     selectMany(transform) {
         const iterable = this.iterable;
         return this._spawn(function* () {
