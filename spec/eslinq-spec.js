@@ -90,6 +90,13 @@ describe("from", () => {
 				actual = from(owners).selectMany(getPets).toArray();
 			expect(actual).toEqual(expected);
 		});
+		
+		it("behaves correctly if the transform function returns an empty iterable", () => {
+			const original = [[1], [], [2], []],
+				expected = [1, 2],
+				actual = from(original).selectMany(identity).toArray();
+			expect(actual).toEqual(expected);
+		});
 
 	});
 });
