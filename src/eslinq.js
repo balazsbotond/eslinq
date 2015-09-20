@@ -234,6 +234,17 @@ export class Collection {
         });
     }
 
+    /**
+     * Returns the distinct elements in the collection (removes duplication).
+     * 
+     * @return {Collection} A Collection containing the distinct elements
+     *     of the original one.
+     * 
+     * @example
+     * const numbers = [1, 1, 1, 2, 3, 4, 3],
+     *       noDupl = from(numbers).distinct();
+     * for (let n of noDupl) console.log(n); // 1 2 3 4
+     */
     distinct() {
         return new Collection(new Set(this.iterable));
     }
