@@ -154,6 +154,22 @@ export class Collection {
      * Set methods
      */
 
+    /**
+     * Determines whether all elements satisfy a condition.
+     * 
+     * @param {function(i: any): boolean} matches A function that
+     *     determines whether an element of the Collection satisfies
+     *     a condition.
+     * @return {boolean} true if all elements satisfy the condition,
+     *     otherwise, false.
+     * 
+     * @example
+     * const numbers = [1, 2, 3],
+     *       even = [2, 4, 6],
+     *       isEven = n => n % 2 === 0;
+     * from(numbers).all(isEven); // false
+     * from(even).all(isEven); // true
+     */
     all(matches) {
         for (let i of this.iterable) if (!matches(i)) return false;
         return true;
