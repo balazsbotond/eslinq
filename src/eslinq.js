@@ -175,6 +175,22 @@ export class Collection {
         return true;
     }
 
+    /**
+     * Determines whether at least one element satisfies a condition.
+     * 
+     * @param {function(i: any): boolean} matches A function that
+     *     determines whether an element of the Collection satisfies
+     *     a condition.
+     * @return {boolean} true if at least one element satisfies the
+     *     condition, otherwise, false.
+     * 
+     * @example
+     * const numbers = [1, 2, 3],
+     *       even = [2, 4, 6],
+     *       isOdd = n => n % 2 !== 0;
+     * from(numbers).any(isOdd); // true
+     * from(even).any(isOdd); // false
+     */
     any(matches = _ => true) {
         for (let i of this.iterable) if (matches(i)) return true;
         return false;
