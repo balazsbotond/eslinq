@@ -214,6 +214,18 @@ export class Collection {
         return false;
     }
 
+    /**
+     * Concatenates the iterable specified with the current one.
+     * 
+     * @param {Iterable} other The iterable to concatenate after this instance.
+     * @return {Collection} The concatenation of the two iterables.
+     * 
+     * @example
+     * const numbers = [1, 2],
+     *       letters = ["a", "b"],
+     *       result  = from(numbers).concat(letters);
+     * for (let i of result) console.log(i); // 1 2 a b
+     */
     concat(other) {
         const self = this;
         return this._spawn(function* () {
