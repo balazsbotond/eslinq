@@ -1,0 +1,1 @@
+- Rename Collection to Sequence
