@@ -60,7 +60,11 @@ class Collection {
     selectMany(transform) {
         const iterable = this.iterable;
         return this._spawn(function* () {
-            for (let i of iterable) for (let j of transform(i)) yield j;
+            for (let i of iterable) {
+                const innerIter = transform(i);
+                ensureIsIterable(innerIter, "Transform function should return an iterable");
+                for (let j of innerIter) yield j;
+            }
         });
     }
 
@@ -361,13 +365,23 @@ function compareDefault(a, b) {
 
 function ensureIsNumber(n) {
     if (typeof n !== "number")
-        throw "Only numbers can be averaged";
+        throw new Error("Only numbers can be averaged");
 }
 
 function ensureNotNegative(n, name) {
-    if (n < 0) throw `${name} must not be negative`;
+    if (n < 0) throw new Error(`${name} must not be negative`);
 }
 
 function ensureIsDefined(x, message) {
-    if (x === undefined) throw message;
+    if (x === undefined) throw new Error(message);
+}
+
+function ensureIsFunction(f, message) {
+    if (typeof f !== "function") throw new Error(message);
+}
+
+function ensureIsIterable(i, message) {
+    const iter = i[Symbol.iterator];
+    ensureIsDefined(iter, message);
+    ensureIsFunction(iter, message);
 }
