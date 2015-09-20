@@ -249,10 +249,24 @@ export class Collection {
         return new Collection(new Set(this.iterable));
     }
 
+    /**
+     * Returns all elements of the iterable except the ones in `other`.
+     * 
+     * @param {Iterable} other The iterable to be subtracted.
+     * @return All elements of the iterable except the ones in `other`.
+     * 
+     * @example
+     * const numbers = [1, 2, 3, 4, 5],
+     *       exceptions = [3, 4],
+     *       difference = from(numbers).except(exceptions);
+     * for (let n of difference) console.log(n); // 1 2 5
+     */
     except(other) {
         const iterable = this.iterable;
         other = new Collection(other);
         return this._spawn(function* () {
+            // TODO: this is a very naive implementation. We should build
+            // a set from `other` and use that for the lookup.
             for (let i of iterable) if (!other.contains(i)) yield i;
         });
     }
