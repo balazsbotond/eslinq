@@ -36,7 +36,7 @@ describe("from", () => {
 		
 	});
 
-	describe("select", () => {
+	describe(".select", () => {
 
 		it("returns an empty iterable when given an empty iterable", () => {
 			const original = [],
@@ -87,7 +87,7 @@ describe("from", () => {
 
 	});
 	
-	describe("selectMany", () => {
+	describe(".selectMany", () => {
 
 		const getPets = o => o.pets;
 
@@ -120,7 +120,7 @@ describe("from", () => {
 
 	});
 	
-	describe("where", () => {
+	describe(".where", () => {
 		
 		const verifyAllElementsReturned = (original) => {
 			const expected = original,
@@ -183,7 +183,7 @@ describe("from", () => {
 		
 	});
 	
-	describe("all", () => {
+	describe(".all", () => {
 		
 		it("returns true when given an empty iterable and a constant true condition", () => {
 			const original = [],
@@ -250,7 +250,7 @@ describe("from", () => {
 		
 	});
 	
-	describe("any", () => {
+	describe(".any", () => {
 		
 		it("returns false when given an empty iterable and a constant true condition", () => {
 			expect(from([]).any(_ => true)).toBe(false);
@@ -306,7 +306,7 @@ describe("from", () => {
 		
 	});
 	
-	describe("contains", () => {
+	describe(".contains", () => {
 		
 		it("returns false for the empty iterable", () => {
 			expect(from([]).contains(1)).toBe(false);
@@ -344,6 +344,38 @@ describe("from", () => {
 			expect(from([1, false]).contains(false)).toBe(true);
 		});
 		
+	});
+	
+	describe(".concat", () => {
+
+		it("empty + empty = empty", () => {
+			const actual = from([]).concat([]).toArray(); 
+			expect(actual).toEqual([]);
+		});
+		
+		it("non-empty + empty = non-empty", () => {
+			const original = [1, 2],
+				expected = original,
+				actual = from(original).concat([]).toArray();
+			expect(actual).toEqual(expected);
+		});
+		
+		it("empty + non-empty = non-empty", () => {
+			const original = [],
+				other = [1, 2],
+				expected = other,
+				actual = from(original).concat(other).toArray();
+			expect(actual).toEqual(expected);
+		});
+		
+		it("should concatenate two non-empty iterables as expected", () => {
+			const original = [1, 2],
+				other = [3, 4],
+				expected = original.concat(other),
+				actual = from(original).concat(other).toArray();
+			expect(actual).toEqual(expected);
+		});
+
 	});
 
 });
