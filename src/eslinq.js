@@ -34,8 +34,6 @@
 
 "use strict";
 
-import "babel/polyfill";
-
 export default function from(iterable) {
     return new Collection(iterable);
 }
@@ -373,73 +371,3 @@ function ensureNotNegative(n, name) {
 function ensureIsDefined(x, message) {
     if (x === undefined) throw message;
 }
-
-/*
- * Test code, delete later
- */
-
-const hr = () => { console.log("=====================") };
-
-const numbers = [1, 2, 3, 4, 5];
-
-const squares =
-    from(numbers)
-        .where(n => n % 2 == 0)
-        .select(n => n * n);
-
-squares._log();
-hr();
-
-const owners = [
-    { name: "Kathy", pets: ["dog", "cat"] },
-    { name: "Johnny", pets: ["monkey", "spider"] },
-    { name: "Annie", pets: ["monkey", "cat"] }
-];
-
-const pets =
-    from(owners)
-        .selectMany((o) => o.pets)
-        .where(p => p.includes("o"))
-        .select(p => p.toUpperCase());
-
-pets._log();
-hr();
-
-console.log(from(numbers).all((n) => n < 6));
-console.log(from(numbers).all((n) => n % 2 == 0));
-hr();
-
-console.log(from(numbers).any());
-console.log(from(numbers).any((n) => n == 7));
-hr();
-
-console.log(from([]).any());
-from(numbers).concat([6, 7])._log();
-hr();
-
-from([1, 2, 2, 2, 1, 3, 3, 3]).distinct()._log();
-hr();
-
-from([1, 2, 3, 4, 5]).except([3, 4])._log();
-hr();
-
-from([1, 2, 3, 4, 5]).union([3, 4, 6])._log();
-hr();
-
-from([1, 2, 3, 4, 5]).intersect([3, 4, 6])._log();
-hr();
-
-from([4, 3, 5, 2, 6]).orderBy(n => n)._log();
-hr();
-
-from([4, 3, 5, 2, 6]).orderBy(n => n, (a, b) => compareDefault(b, a))._log();
-hr();
-
-from([1, 2, 3]).reverse()._log();
-hr();
-
-from(owners).groupBy(o => o.pets[0])._log();
-hr();
-
-console.log(from([1, 2, 3]).aggregate((acc, n) => acc + n));
-hr();
