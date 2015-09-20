@@ -253,7 +253,8 @@ export class Collection {
      * Returns all elements of the iterable except the ones in `other`.
      * 
      * @param {Iterable} other The iterable to be subtracted.
-     * @return All elements of the iterable except the ones in `other`.
+     * @return {Collection} All elements of the iterable except the ones
+     *     in `other`.
      * 
      * @example
      * const numbers = [1, 2, 3, 4, 5],
@@ -271,14 +272,40 @@ export class Collection {
         });
     }
 
+    /**
+     * Returns the elements both iterables (this and `other`) contain.
+     * 
+     * @param {Iterable} other The iterable to intersect the current one with.
+     * @return {Collection} The elements both iterables contain.
+     * 
+     * @example
+     * const a = [1, 2, 3],
+     *       b = [2, 3, 4],
+     *       i = from(a).intersect(b);
+     * for (let n of i) console.log(i); // 2 3
+     */
     intersect(other) {
         const iterable = this.iterable;
         other = new Collection(other);
         return this._spawn(function* () {
+            // TODO: this is a very naive implementation. We should build
+            // a set from `other` and use that for the lookup.
            for (let i of iterable) if (other.contains(i)) yield i;
         });
     }
 
+    /**
+     * Returns the distinct elements from both iterables (this and `other`).
+     * 
+     * @param {Iterable} other The iterable to union the current one with.
+     * @return {Collection} The distinct elements from both iterables.
+     * 
+     * @example
+     * const a = [1, 2, 1, 3, 2],
+     *       b = [3, 3, 4, 5, 4],
+     *       u = from(a).union(b);
+     * for (let i of u) console.log(i); // 1 2 3 4 5
+     */
     union(other) {
         return new Collection(this.iterable).concat(other).distinct();
     }
