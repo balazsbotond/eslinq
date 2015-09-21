@@ -6,6 +6,8 @@ ESLinq
 *ESLinq* aims to be a complete, robust, thoroughly tested port of [Linq to Objects][linq-to-objects]
 to ECMAScript 2015 (ES6).
 
+[API Documentation](https://doc.esdoc.org/github.com/balazsbotond/eslinq/)
+
 ![API Documentation Coverage](https://doc.esdoc.org/github.com/balazsbotond/eslinq/badge.svg)
 
 A first example
