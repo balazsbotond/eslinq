@@ -406,7 +406,7 @@ export class Collection {
     average(select = n => n) {
         let sum = 0, count = 0;
         for (let i of this.iterable) {
-            this._ensureIsNumber(i);
+            ensureIsNumber(i, "Only numbers can be averaged");
             sum += select(i);
             count++;
         }
@@ -416,7 +416,7 @@ export class Collection {
     sum(select = n => n) {
         let sum;
         for (let i of this.iterable) {
-            this._ensureIsNumber(i);
+            ensureIsNumber(i, "Only numbers can be summed");
             sum += select(i);
         }
         return sum;
@@ -433,14 +433,14 @@ export class Collection {
      */
 
     elementAt(index) {
-        ensureNotNegative(index, "index");
+        ensureIsNotNegative(index, "`index` should not be negative");
         const element = this._elementAt(index);
         ensureIsDefined(element, "Index too large");
         return element;
     }
     
     elementAtOrDefault(index, defaultValue) {
-        ensureNotNegative(index, "index");
+        ensureIsNotNegative(index, "`index` should not be negative");
         const element = this._elementAt(index);
         return element !== undefined ? element : defaultValue;
     }
@@ -555,6 +555,75 @@ export class Collection {
     }
     
     /*
+     * Factory methods
+     */
+    
+    /**
+     * Returns an empty `Collection`.
+     * 
+     * **Note:**
+     * The `Collection` instance returned by `empty` is cached, that is,
+     * it always returns the same instance.
+     * 
+     * @return {Collection} A `Collection` that has no elements.
+     * 
+     * @example
+     * console.log("start");
+     * 
+     * for (let i of Collection.empty()) {
+     *     console.log(i);
+     * }
+     * 
+     * console.log("end");
+     * 
+     * // Output:
+     * //     start
+     * //     end
+     */
+    static empty() {
+        let self = Collection;
+
+        if (self._emptyInstance === undefined) {
+            self._emptyInstance = self._spawn(function* () {});
+        }
+
+        return self._emptyInstance;
+    }
+    
+    /**
+     * Returns a `Collection` that contains the specified element repeated
+     * the specified number of times.
+     * 
+     * @param {any} item The item to be repeated
+     * @param {number} count How many times to repeat the item
+     * 
+     * @return {Collection} A `Collection` that contains the specified element repeated
+     * the specified number of times.
+     * 
+     * @example
+     * for (let i of Collection.repeat("a", 3)) {
+     *     console.log(i);
+     * }
+     * 
+     * // Output:
+     * //     a
+     * //     a
+     * //     a
+     */
+    static repeat(item, count) {
+        ensureIsNumber(count, "`count` should be a number");
+        ensureIsNotNegative(count, "`count` should not be negative");
+        
+        const generator = function* () {
+            for (let i = 0; i < count; i++) {
+                yield item;
+            }
+        };
+        
+        return Collection._spawn(generator);
+    }
+    
+    /*
      * Conversion methods
      */
     
@@ -568,6 +637,10 @@ export class Collection {
 
     _spawn(generator) {
         return new Collection({ [Symbol.iterator]: generator.bind(this) });
+    }
+    
+    static _spawn(generator) {
+        return new Collection({ [Symbol.iterator]: generator });
     }
 
     _log() {
@@ -589,13 +662,14 @@ function compareDefault(a, b) {
  * Argument validation helpers
  */
 
-function ensureIsNumber(n) {
-    if (typeof n !== "number")
-        throw new TypeError("Only numbers can be averaged");
+function ensureIsNumber(n, message) {
+    if (typeof n !== "number") {
+        throw new TypeError(message);
+    }
 }
 
-function ensureNotNegative(n, name) {
-    if (n < 0) throw new RangeError(`${name} must not be negative`);
+function ensureIsNotNegative(n, message) {
+    if (n < 0) throw new RangeError(message);
 }
 
 function ensureIsDefined(x, message) {
