@@ -36,12 +36,12 @@
 
 /**
  * Helper function that wraps the specified iterable instance in an
- * ESLinq Collection which can be queried using ESLinq methods (like
+ * ESLinq Sequence which can be queried using ESLinq methods (like
  * 'select', 'where', etc.).
  * 
  * @param {Iterable} iterable An iterable object (like an Array, a Set,
  *     or any object with a [Symbol.iterator] property).
- * @return {Collection} An ESLinq collection which can be queried using
+ * @return {Sequence} An ESLinq Sequence which can be queried using
  *     ESLinq methods (like 'select', 'where', etc.).
  * 
  * @example
@@ -54,18 +54,18 @@
  *     console.log(n); // 4 16
  */
 export default function from(iterable) {
-    return new Collection(iterable);
+    return new Sequence(iterable);
 }
 
 /**
- * An iterable collection that can be queried using ESLinq methods (like
+ * An iterable sequence that can be queried using ESLinq operators (like
  * 'select', 'where', etc.).
  * 
  * @implements {Iterable}
  */
-export class Collection {
+export class Sequence {
     constructor(iterable) {
-        if (iterable instanceof Collection) iterable = iterable.iterable;
+        if (iterable instanceof Sequence) iterable = iterable.iterable;
 
         this.iterable = iterable;
         this[Symbol.iterator] = iterable[Symbol.iterator];
@@ -77,14 +77,14 @@ export class Collection {
 
     /**
      * Applies the specified transformation to all elements of the
-     * `Collection`, returning a new `Collection` of the transformed elements.
+     * `Sequence`, returning a new `Sequence` of the transformed elements.
      * 
      * @param {function(item: any, index: number): any} transform A function
-     *     that is used to transform the elements of the collection. The first
+     *     that is used to transform the elements of the sequence. The first
      *     argument, `item`, is the current sequence element, the second one,
      *     `index`, is the zero-based index of the current element.
      * 
-     * @return {Collection} A new `Collection` of the transformed elements.
+     * @return {Sequence} A new `Sequence` of the transformed elements.
      * 
      * @throws {TypeError} if `transform` is not a function
      * 
@@ -121,12 +121,12 @@ export class Collection {
 
     /**
      * Applies the specified transformation to all elements of the
-     * Collection. The transformation should return an iterable. The
-     * resulting collection will be a concatenation of these iterables.
+     * Sequence. The transformation should return an iterable. The
+     * resulting Sequence will be a concatenation of these iterables.
      * 
      * @param {function(i: any): Iterable} transform A function that is
-     *     called for each Collection element. Should return a iterable.
-     * @return {Collection} A concatenation of the iterables returned by
+     *     called for each Sequence element. Should return a iterable.
+     * @return {Sequence} A concatenation of the iterables returned by
      *     the transformation function.
      * @throws {Error} If the object returned by the transform function
      *     is not iterable.
@@ -151,7 +151,7 @@ export class Collection {
     }
 
     /**
-     * Filters the Collection by a condition specified.
+     * Filters the Sequence by a condition specified.
      * 
      * @param {function(item: any, index: number): boolean} matches A
      *     function that returns true if an element is to be included in 
@@ -159,7 +159,7 @@ export class Collection {
      *     element, the second one, `index`, is the zero-based index of the
      *     current element.
      *  
-     * @return {Collection} A Collection of the elements for which the
+     * @return {Sequence} A Sequence of the elements for which the
      *     'matches' function returned true.
      * 
      * @throws {TypeError} if `matches` is not a function
@@ -208,7 +208,7 @@ export class Collection {
      * Determines whether all elements satisfy a condition.
      * 
      * @param {function(i: any): boolean} matches A function that
-     *     determines whether an element of the Collection satisfies
+     *     determines whether an element of the Sequence satisfies
      *     a condition.
      * @return {boolean} true if all elements satisfy the condition,
      *     otherwise, false.
@@ -229,7 +229,7 @@ export class Collection {
      * Determines whether at least one element satisfies a condition.
      * 
      * @param {function(i: any): boolean} matches A function that
-     *     determines whether an element of the Collection satisfies
+     *     determines whether an element of the Sequence satisfies
      *     a condition.
      * @return {boolean} true if at least one element satisfies the
      *     condition, otherwise, false.
@@ -268,7 +268,7 @@ export class Collection {
      * Concatenates the iterable specified with the current one.
      * 
      * @param {Iterable} other The iterable to concatenate after this instance.
-     * @return {Collection} The concatenation of the two iterables.
+     * @return {Sequence} The concatenation of the two iterables.
      * 
      * @example
      * const numbers = [1, 2],
@@ -285,9 +285,9 @@ export class Collection {
     }
 
     /**
-     * Returns the distinct elements in the collection (removes duplication).
+     * Returns the distinct elements in the sequence (removes duplication).
      * 
-     * @return {Collection} A Collection containing the distinct elements
+     * @return {Sequence} A Sequence containing the distinct elements
      *     of the original one.
      * 
      * @example
@@ -296,14 +296,14 @@ export class Collection {
      * for (let n of noDupl) console.log(n); // 1 2 3 4
      */
     distinct() {
-        return new Collection(new Set(this.iterable));
+        return new Sequence(new Set(this.iterable));
     }
 
     /**
      * Returns all elements of the iterable except the ones in `other`.
      * 
      * @param {Iterable} other The iterable to be subtracted.
-     * @return {Collection} All elements of the iterable except the ones
+     * @return {Sequence} All elements of the iterable except the ones
      *     in `other`.
      * 
      * @example
@@ -314,7 +314,7 @@ export class Collection {
      */
     except(other) {
         const iterable = this.iterable;
-        other = new Collection(other);
+        other = new Sequence(other);
         return this._wrap(function* () {
             // TODO: this is a very naive implementation. We should build
             // a set from `other` and use that for the lookup.
@@ -326,7 +326,7 @@ export class Collection {
      * Returns the elements both iterables (this and `other`) contain.
      * 
      * @param {Iterable} other The iterable to intersect the current one with.
-     * @return {Collection} The elements both iterables contain.
+     * @return {Sequence} The elements both iterables contain.
      * 
      * @example
      * const a = [1, 2, 3],
@@ -336,7 +336,7 @@ export class Collection {
      */
     intersect(other) {
         const iterable = this.iterable;
-        other = new Collection(other);
+        other = new Sequence(other);
         return this._wrap(function* () {
             // TODO: this is a very naive implementation. We should build
             // a set from `other` and use that for the lookup.
@@ -348,7 +348,7 @@ export class Collection {
      * Returns the distinct elements from both iterables (this and `other`).
      * 
      * @param {Iterable} other The iterable to union the current one with.
-     * @return {Collection} The distinct elements from both iterables.
+     * @return {Sequence} The distinct elements from both iterables.
      * 
      * @example
      * const a = [1, 2, 1, 3, 2],
@@ -357,7 +357,7 @@ export class Collection {
      * for (let i of u) console.log(i); // 1 2 3 4 5
      */
     union(other) {
-        return new Collection(this.iterable).concat(other).distinct();
+        return new Sequence(this.iterable).concat(other).distinct();
     }
 
     /*
@@ -367,13 +367,13 @@ export class Collection {
      orderBy(get, compare = compareDefault) {
         let result = Array.from(this.iterable);
         result.sort((a, b) => compare(get(a), get(b)));
-        return new Collection(result);
+        return new Sequence(result);
      }
 
      orderByDescending(get, compare = compareDefault) {
         let result = Array.from(this.iterable);
         result.sort((a, b) => compare(get(b), get(a)));
-        return new Collection(result);
+        return new Sequence(result);
      }
 
      reverse() {
@@ -394,7 +394,7 @@ export class Collection {
             if (map.has(key)) map.get(key).push(i);
             else map.set(getKey(i), [i]);
         }
-        return new Collection(map);
+        return new Sequence(map);
     }
 
     /*
@@ -508,7 +508,7 @@ export class Collection {
         for (let i of this.iterable) {
             if (matches(i)) {
                 if (found)
-                    throw "Collection contains more than one matching element";
+                    throw "Sequence contains more than one matching element";
                 item = i;
                 found = true;
             }
@@ -563,18 +563,18 @@ export class Collection {
      */
     
     /**
-     * Returns an empty `Collection`.
+     * Returns an empty `Sequence`.
      * 
      * **Note:**
-     * The `Collection` instance returned by `empty` is cached, that is,
+     * The `Sequence` instance returned by `empty` is cached, that is,
      * it always returns the same instance.
      * 
-     * @return {Collection} A `Collection` that has no elements.
+     * @return {Sequence} A `Sequence` that has no elements.
      * 
      * @example
      * console.log("start");
      * 
-     * for (let i of Collection.empty()) {
+     * for (let i of Sequence.empty()) {
      *     console.log(i);
      * }
      * 
@@ -585,7 +585,7 @@ export class Collection {
      * //     end
      */
     static empty() {
-        let self = Collection;
+        let self = Sequence;
 
         if (self._emptyInstance === undefined) {
             self._emptyInstance = self._wrap(function* () {});
@@ -595,20 +595,20 @@ export class Collection {
     }
     
     /**
-     * Returns a `Collection` that contains the specified element repeated
+     * Returns a `Sequence` that contains the specified element repeated
      * the specified number of times.
      * 
      * @param {any} item The item to be repeated.
      * @param {number} count How many times to repeat the item.
      * 
-     * @return {Collection} A `Collection` that contains the specified element
+     * @return {Sequence} A `Sequence` that contains the specified element
      *     repeated the specified number of times.
      * 
      * @throws {TypeError} if `count` is not a number
      * @throws {RangeError} if `count` is negative
      * 
      * @example
-     * for (let i of Collection.repeat("a", 3)) {
+     * for (let i of Sequence.repeat("a", 3)) {
      *     console.log(i);
      * }
      * 
@@ -627,7 +627,7 @@ export class Collection {
             }
         };
         
-        return Collection._wrap(generator);
+        return Sequence._wrap(generator);
     }
     
     /**
@@ -637,14 +637,14 @@ export class Collection {
      * @param {number} start The first element of the sequence.
      * @param {number} count The number of elements.
      * 
-     * @return {Collection} An increasing sequence of integers, of
+     * @return {Sequence} An increasing sequence of integers, of
      *     `count` items, starting at `start`.
      * 
      * @throws {TypeError} if either `start` or `count` is not a number
      * @throws {RangeError} if (1) count is negative
      * 
      * @example
-     * for (let i of Collection.range(2, 4)) {
+     * for (let i of Sequence.range(2, 4)) {
      *     console.log(i);
      * }
      * 
@@ -665,7 +665,7 @@ export class Collection {
             }
         };
         
-        return Collection._wrap(generator);
+        return Sequence._wrap(generator);
     }
     
     /*
@@ -681,11 +681,11 @@ export class Collection {
      */
 
     _wrap(generator) {
-        return new Collection({ [Symbol.iterator]: generator.bind(this) });
+        return new Sequence({ [Symbol.iterator]: generator.bind(this) });
     }
     
     static _wrap(generator) {
-        return new Collection({ [Symbol.iterator]: generator });
+        return new Sequence({ [Symbol.iterator]: generator });
     }
 
     _log() {

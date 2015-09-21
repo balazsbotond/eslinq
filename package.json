@@ -1,7 +1,7 @@
 {
   "name": "fromjs",
   "version": "0.0.0",
-  "description": "Lazily evaluated collection tools for ECMAScript 6",
+  "description": "Lazily evaluated iterable tools for ECMAScript 6",
   "main": "from.js",
   "scripts": {
     "test": "jest"

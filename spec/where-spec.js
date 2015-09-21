@@ -50,29 +50,29 @@ describe(".where", () => {
 		expect(actual).toEqual(original);
 	});
 	
-	it("returns an empty iterable if the only element in a collection does not match", () => {
+	it("returns an empty iterable if the only element in a sequence does not match", () => {
 		const original = [1],
 			expected = [],
 			actual = from(original).where(even).toArray();
 		expect(actual).toEqual(expected);
 	});
 	
-	it("returns the element if the only element in a collection matches", () => {
+	it("returns the element if the only element in a sequence matches", () => {
 		const original = [2],
 			expected = [2],
 			actual = from(original).where(even).toArray();
 		expect(actual).toEqual(expected);
 	});
 	
-	it("works as expected if there are undefined elements in the collection", () => {
+	it("works as expected if there are undefined elements in the sequence", () => {
 		verifyAllElementsReturned([1, undefined]);
 	});
 	
-	it("works as expected if there are null elements in the collection", () => {
+	it("works as expected if there are null elements in the sequence", () => {
 		verifyAllElementsReturned([1, null]);
 	});
 	
-	it("works as expected if there are false elements in the collection", () => {
+	it("works as expected if there are false elements in the sequence", () => {
 		verifyAllElementsReturned([1, false]);
 	});
 	
