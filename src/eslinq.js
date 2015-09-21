@@ -36,13 +36,13 @@
 
 /**
  * Helper function that wraps the specified iterable instance in an
- * ESLinq Sequence which can be queried using ESLinq methods (like
+ * ESLinq Sequence which can be queried using ESLinq operators (like
  * 'select', 'where', etc.).
  * 
  * @param {Iterable} iterable An iterable object (like an Array, a Set,
  *     or any object with a [Symbol.iterator] property).
  * @return {Sequence} An ESLinq Sequence which can be queried using
- *     ESLinq methods (like 'select', 'where', etc.).
+ *     ESLinq operators (like 'select', 'where', etc.).
  * 
  * @example
  * const numbers = [1, 2, 3, 4, 5];
