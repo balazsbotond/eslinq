@@ -584,7 +584,7 @@ export class Collection {
         let self = Collection;
 
         if (self._emptyInstance === undefined) {
-            self._emptyInstance = self._spawn(function* () {});
+            self._emptyInstance = self._wrap(function* () {});
         }
 
         return self._emptyInstance;
@@ -594,11 +594,14 @@ export class Collection {
      * Returns a `Collection` that contains the specified element repeated
      * the specified number of times.
      * 
-     * @param {any} item The item to be repeated
-     * @param {number} count How many times to repeat the item
+     * @param {any} item The item to be repeated.
+     * @param {number} count How many times to repeat the item.
      * 
-     * @return {Collection} A `Collection` that contains the specified element repeated
-     * the specified number of times.
+     * @return {Collection} A `Collection` that contains the specified element
+     *     repeated the specified number of times.
+     * 
+     * @throws {TypeError} if `count` is not a number
+     * @throws {RangeError} if `count` is negative
      * 
      * @example
      * for (let i of Collection.repeat("a", 3)) {
@@ -620,7 +623,45 @@ export class Collection {
             }
         };
         
-        return Collection._spawn(generator);
+        return Collection._wrap(generator);
+    }
+    
+    /**
+     * Returns an increasing sequence of integers, of `count` items,
+     * starting at `start`.
+     * 
+     * @param {number} start The first element of the sequence.
+     * @param {number} count The number of elements.
+     * 
+     * @return {Collection} An increasing sequence of integers, of
+     *     `count` items, starting at `start`.
+     * 
+     * @throws {TypeError} if either `start` or `count` is not a number
+     * @throws {RangeError} if (1) count is negative
+     * 
+     * @example
+     * for (let i of Collection.range(2, 4)) {
+     *     console.log(i);
+     * }
+     * 
+     * // Output:
+     * //     2
+     * //     3
+     * //     4
+     * //     5
+     */
+    static range(start, count) {
+        ensureIsNumber(start, "`start` should be a number");
+        ensureIsNumber(count, "`count` should be a number");
+        ensureIsNotNegative(count, "`count` should not be negative");
+        
+        const generator = function* () {
+            for (let i = 0; i < count; i++) {
+                yield start + i;
+            }
+        };
+        
+        return Collection._wrap(generator);
     }
     
     /*
@@ -639,7 +680,7 @@ export class Collection {
         return new Collection({ [Symbol.iterator]: generator.bind(this) });
     }
     
-    static _spawn(generator) {
+    static _wrap(generator) {
         return new Collection({ [Symbol.iterator]: generator });
     }
 
