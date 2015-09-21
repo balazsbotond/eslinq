@@ -86,6 +86,8 @@ export class Collection {
      * 
      * @return {Collection} A new `Collection` of the transformed elements.
      * 
+     * @throws {TypeError} if `transform` is not a function
+     * 
      * @example
      * // Simple case, only the `item` parameter of `matches` is used
      * const numbers = [1, 2, 3, 4, 5],
@@ -114,7 +116,7 @@ export class Collection {
             }
         };
 
-        return this._spawn(generator);
+        return this._wrap(generator);
     }
 
     /**
@@ -139,7 +141,7 @@ export class Collection {
      */
     selectMany(transform) {
         const iterable = this.iterable;
-        return this._spawn(function* () {
+        return this._wrap(function* () {
             for (let i of iterable) {
                 const innerIter = transform(i);
                 ensureIsIterable(innerIter, "Transform function should return an iterable");
@@ -159,6 +161,8 @@ export class Collection {
      *  
      * @return {Collection} A Collection of the elements for which the
      *     'matches' function returned true.
+     * 
+     * @throws {TypeError} if `matches` is not a function
      * 
      * @example
      * // Simple case, only the `item` parameter of `matches` is used
@@ -189,7 +193,7 @@ export class Collection {
             }
         }
 
-        return this._spawn(generator);
+        return this._wrap(generator);
     }
 
     /*
@@ -274,7 +278,7 @@ export class Collection {
      */
     concat(other) {
         const self = this;
-        return this._spawn(function* () {
+        return this._wrap(function* () {
             for (let i of self.iterable) yield i;
             for (let j of other) yield j;
         });
@@ -311,7 +315,7 @@ export class Collection {
     except(other) {
         const iterable = this.iterable;
         other = new Collection(other);
-        return this._spawn(function* () {
+        return this._wrap(function* () {
             // TODO: this is a very naive implementation. We should build
             // a set from `other` and use that for the lookup.
             for (let i of iterable) if (!other.contains(i)) yield i;
@@ -333,7 +337,7 @@ export class Collection {
     intersect(other) {
         const iterable = this.iterable;
         other = new Collection(other);
-        return this._spawn(function* () {
+        return this._wrap(function* () {
             // TODO: this is a very naive implementation. We should build
             // a set from `other` and use that for the lookup.
            for (let i of iterable) if (other.contains(i)) yield i;
@@ -374,7 +378,7 @@ export class Collection {
 
      reverse() {
         const array = Array.from(this.iterable);
-        return this._spawn(function* () {
+        return this._wrap(function* () {
             for (let i = array.length - 1; i >= 0; i--) yield array[i];
         });
      }
@@ -514,7 +518,7 @@ export class Collection {
     
     skip(count) {
         const iterable = this.iterable;
-        return this._spawn(function* () {
+        return this._wrap(function* () {
             let c = 0;
             for (let i of iterable) if (++c > count) yield i;
         });
@@ -522,7 +526,7 @@ export class Collection {
     
     skipWhile(matches) {
         const iterable = this.iterable;
-        return this._spawn(function* () {
+        return this._wrap(function* () {
             let wasFalse = false;
             for (let i of iterable) {
                 if (wasFalse || !matches(i)) {
@@ -535,7 +539,7 @@ export class Collection {
     
     take(count) {
         const iterable = this.iterable;
-        return this._spawn(function* () {
+        return this._wrap(function* () {
             let c = 0;
             for (let i of iterable) {
                 if (++c <= count) yield i;
@@ -546,7 +550,7 @@ export class Collection {
 
     takeWhile(matches) {
         const iterable = this.iterable;
-        return this._spawn(function* () {
+        return this._wrap(function* () {
             for (let i of iterable) {
                 if (matches(i)) yield i;
                 else break;
@@ -676,7 +680,7 @@ export class Collection {
      * Private helpers
      */
 
-    _spawn(generator) {
+    _wrap(generator) {
         return new Collection({ [Symbol.iterator]: generator.bind(this) });
     }
     
