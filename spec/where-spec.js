@@ -1,7 +1,7 @@
 "use strict";
 
 import from from "../src/eslinq";
-import { even } from "./helpers";
+import { even, ThrowingIterable } from "./helpers";
 
 describe(".where", () => {
 	
@@ -10,6 +10,14 @@ describe(".where", () => {
 			actual = from(original).where(_ => true).toArray();
 		expect(actual).toEqual(expected);
 	};
+	
+	it("fails early if it is called without arguments", () => {
+		expect(() => from([]).where()).toThrowError("`matches` should be a function");
+	});
+	
+	it("does not start iteration eagerly", () => {
+		from(new ThrowingIterable()).where(_ => true);
+	});
 	
 	it("returns an empty iterable when given an empty iterable", () => {
 		const original = [],
@@ -62,6 +70,17 @@ describe(".where", () => {
 	
 	it("works as expected if there are false elements in the collection", () => {
 		verifyAllElementsReturned([1, false]);
+	});
+	
+	it("should set the `index` property of `matches` properly", () => {
+		let expectedIndex = 0;
+		const verifyIndex = (item, index) => {
+			expect(index).toEqual(expectedIndex);
+			expectedIndex++;
+			return false;
+		};
+		const numbers = [1, 2, 3];
+		from(numbers).where(verifyIndex).toArray();
 	});
 	
 });

@@ -129,21 +129,42 @@ export class Collection {
     /**
      * Filters the Collection by a condition specified.
      * 
-     * @param {function(i: any): boolean} matches A function that returns
-     *     true if an element is to be included in the result.
+     * @param {function(item: any, index: number): boolean} matches A
+     *     function that returns true if an element is to be included in 
+     *     the result.
      * @return {Collection} A Collection of the elements for which the
      *     'matches' function returned true.
      * 
      * @example
-     * const numbers = [1, 2, 3, 4, 5];
-     * const even = from(numbers).where(n => n % 2 === 0);
+     * // Simple case, the `index` parameter of `matches` is not used
+     * const numbers = [1, 2, 3, 4, 5],
+     *       even = from(numbers).where(n => n % 2 === 0);
+     *  
      * for (let n of even) console.log(n); // 2 4
+     * 
+     * // Here we also use the `index` parameter
+     * const numbers = [2, 1, 3, 0, 4],
+     *       itemEqualsIndex = (item, index) => item === index,
+     *       numbersEqualToTheirIndices = from(numbers).where(itemEqualsIndex);
+     * 
+     * for (let n of numbersEqualToTheirIndices) {
+     *     console.log(n); // 1 4
+     * }
      */
     where(matches) {
-        const iterable = this.iterable;
-        return this._spawn(function* () {
-            for (let i of iterable) if (matches(i)) yield i;
-        });
+        ensureIsFunction(matches, "`matches` should be a function");
+        
+        const generator = function* () {
+            let index = 0;
+            for (let item of this.iterable) {
+                if (matches(item, index)) {
+                    yield item;
+                }
+                index++;
+            }
+        }
+
+        return this._spawn(generator);
     }
 
     /*
@@ -521,7 +542,7 @@ export class Collection {
      */
 
     _spawn(generator) {
-        return new Collection({ [Symbol.iterator]: generator });
+        return new Collection({ [Symbol.iterator]: generator.bind(this) });
     }
 
     _log() {
@@ -545,19 +566,19 @@ function compareDefault(a, b) {
 
 function ensureIsNumber(n) {
     if (typeof n !== "number")
-        throw new Error("Only numbers can be averaged");
+        throw new TypeError("Only numbers can be averaged");
 }
 
 function ensureNotNegative(n, name) {
-    if (n < 0) throw new Error(`${name} must not be negative`);
+    if (n < 0) throw new RangeError(`${name} must not be negative`);
 }
 
 function ensureIsDefined(x, message) {
-    if (x === undefined) throw new Error(message);
+    if (x === undefined) throw new TypeError(message);
 }
 
 function ensureIsFunction(f, message) {
-    if (typeof f !== "function") throw new Error(message);
+    if (typeof f !== "function") throw new TypeError(message);
 }
 
 function ensureIsIterable(i, message) {
