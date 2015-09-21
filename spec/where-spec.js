@@ -15,6 +15,10 @@ describe(".where", () => {
 		expect(() => from([]).where()).toThrowError("`matches` should be a function");
 	});
 	
+	it("fails early if it is called with a non-function argument", () => {
+		expect(() => from([]).where(0)).toThrowError("`matches` should be a function");
+	});
+	
 	it("does not start iteration eagerly", () => {
 		from(new ThrowingIterable()).where(_ => true);
 	});

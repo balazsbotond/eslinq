@@ -77,22 +77,44 @@ export class Collection {
 
     /**
      * Applies the specified transformation to all elements of the
-     * Collection, returning a new Collection of the transformed elements.
+     * `Collection`, returning a new `Collection` of the transformed elements.
      * 
-     * @param {function(i: any): any} transform A function that is used
-     *     to transform the elements of the collection.
-     * @return {Collection} A new Collection of the transformed elements.
+     * @param {function(item: any, index: number): any} transform A function
+     *     that is used to transform the elements of the collection. The first
+     *     argument, `item`, is the current sequence element, the second one,
+     *     `index`, is the zero-based index of the current element.
+     * 
+     * @return {Collection} A new `Collection` of the transformed elements.
      * 
      * @example
-     * const numbers = [1, 2, 3, 4, 5];
-     * const even = from(numbers).select(n => n % 2 === 0);
-     * for (let n of even) console.log(n); // 2 4 
+     * // Simple case, only the `item` parameter of `matches` is used
+     * const numbers = [1, 2, 3, 4, 5],
+     *       even = from(numbers).select(n => n % 2 === 0);
+     * 
+     * for (let n of even) {
+     *     console.log(n); // 2 4
+     * }
+     * 
+     * // Here we also use the `index` parameter
+     * const numbers = [1, 2, 3, 4, 5],
+     *       numbersPlusIndices = from(numbers).select((n, i) => n + i);
+     * 
+     * for (let n of numbersPlusIndices) {
+     *     console.log(n); // 1 3 5 7 9
+     * }
      */
     select(transform) {
-        const iterable = this.iterable;
-        return this._spawn(function* () {
-            for (let i of iterable) yield transform(i);
-        });
+        ensureIsFunction(transform, "`transform` should be a function");
+
+        const generator = function* () {
+            let index = 0;
+            for (let item of this.iterable) {
+                yield transform(item, index);
+                index++;
+            }
+        };
+
+        return this._spawn(generator);
     }
 
     /**
@@ -131,12 +153,15 @@ export class Collection {
      * 
      * @param {function(item: any, index: number): boolean} matches A
      *     function that returns true if an element is to be included in 
-     *     the result.
+     *     the result. The first argument, `item`, is the current sequence
+     *     element, the second one, `index`, is the zero-based index of the
+     *     current element.
+     *  
      * @return {Collection} A Collection of the elements for which the
      *     'matches' function returned true.
      * 
      * @example
-     * // Simple case, the `index` parameter of `matches` is not used
+     * // Simple case, only the `item` parameter of `matches` is used
      * const numbers = [1, 2, 3, 4, 5],
      *       even = from(numbers).where(n => n % 2 === 0);
      *  

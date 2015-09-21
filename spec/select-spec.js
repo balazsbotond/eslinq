@@ -1,9 +1,21 @@
 "use strict";
 
 import from from "../src/eslinq";
-import { identity, double } from "./helpers";
+import { identity, double, ThrowingIterable } from "./helpers";
 
 describe(".select", () => {
+	
+	it("fails early if it is called without arguments", () => {
+		expect(() => from([]).select()).toThrowError("`transform` should be a function");
+	});
+	
+	it("fails early if it is called with a non-function argument", () => {
+		expect(() => from([]).select(0)).toThrowError("`transform` should be a function");
+	});
+	
+	it("does not start iteration eagerly", () => {
+		from(new ThrowingIterable()).select(_ => _);
+	});
 
 	it("returns an empty iterable when given an empty iterable", () => {
 		const original = [],
@@ -50,6 +62,24 @@ describe(".select", () => {
 	
 	it("works as expected if the transform function returns false", () => {
 		verifyWithConstant(false);
+	});
+	
+	it("can change the type of the elements", () => {
+		const original = [1, 2, 3],
+			  expected = ["1", "2", "3"],
+			  stringify = n => n.toString(),
+			  actual = from(original).select(stringify).toArray();
+
+		expect(actual).toEqual(expected);
+	});
+	
+	it("passes the index of the current element to `transform`", () => {
+		const original = [1, 2, 3],
+		      expected = [1, 3, 5],
+			  addIndex = (item, index) => item + index,
+			  actual = from(original).select(addIndex).toArray();
+		
+		expect(actual).toEqual(expected);
 	});
 
 });
