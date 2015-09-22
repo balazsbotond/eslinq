@@ -3,7 +3,9 @@
         "target": "ES6",
         "module": "commonjs"
     },
-    "files": [
-        "typings/jasmine/jasmine.d.ts"
+    "exclude": [
+        "node_modules",
+        "dist",
+        "docs"
     ]
 }
