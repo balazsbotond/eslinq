@@ -1,2 +1,0 @@
-- Rename Collection to Sequence
-- Use a Set for implementing `except`
