@@ -9,6 +9,7 @@ to ECMAScript 2015 (ES6).
 [API Documentation](https://doc.esdoc.org/github.com/balazsbotond/eslinq/)
 
 [![API Documentation Coverage](https://doc.esdoc.org/github.com/balazsbotond/eslinq/badge.svg)](https://doc.esdoc.org/github.com/balazsbotond/eslinq)
+[![Build Status](https://travis-ci.org/balazsbotond/eslinq.svg?branch=master)](https://travis-ci.org/balazsbotond/eslinq)
 
 A first example
 ---------------
