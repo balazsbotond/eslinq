@@ -67,7 +67,7 @@ for (let email of verifiedUserEmails) {
 }
 ```
 
-Now let's check if all emails end in ".com":
+Now let's check if all emails end with ".com":
 
 ```javascript
 const allEmailsEndWithCom =
