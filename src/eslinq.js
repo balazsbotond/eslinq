@@ -274,14 +274,20 @@ export class Sequence {
      * const numbers = [1, 2],
      *       letters = ["a", "b"],
      *       result  = from(numbers).concat(letters);
-     * for (let i of result) console.log(i); // 1 2 a b
+     * 
+     * for (let i of result) {
+     *     console.log(i); // 1 2 a b
+     * }
      */
     concat(other) {
-        const self = this;
-        return this._wrap(function* () {
-            for (let i of self.iterable) yield i;
+        ensureIsIterable(other, "`other` should be iterable");
+
+        const generator = function* () {
+            for (let i of this.iterable) yield i;
             for (let j of other) yield j;
-        });
+        };
+        
+        return this._wrap(generator);
     }
 
     /**
