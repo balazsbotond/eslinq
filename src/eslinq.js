@@ -191,10 +191,10 @@ export class Sequence {
             let index = 0;
 
             for (let item of this.iterable) {
-                const seq = getSequence(item, index);
-                ensureIsIterable(seq, "`getSequence` should return an iterable");
+                const innerIterable = getSequence(item, index);
+                ensureIsIterable(innerIterable, "`getSequence` should return an iterable");
 
-                for (let innerItem of seq) {
+                for (let innerItem of innerIterable) {
                     yield transform(item, innerItem);
                 }
                 
