@@ -434,14 +434,13 @@ export class Sequence {
      * 
      * **Complexity:**
      * 
-     * - O(1) if the `Iterable` wrapped by this `Sequence` is an `Array`
+     * - O(1) if the `Iterable` wrapped by this `Sequence` is an `Array`, `Map` or `Set`
      * - O(n) for other `Iterable`s
      * 
-     * *Note:*
-     * 
-     * The complexity is O(1) only if the `Array` is wrapped directly, like
-     * `from([1, 2]).count()`. Indirect wrapping will cause the entire sequence to
-     * be iterated, as is the case for `from([1, 2]).where(n => n % 2 === 0).count()`.
+     * *Note:* The complexity is O(1) only if the `Array`, `Map` or `Set` is wrapped
+     * directly, like `from([1, 2]).count()`. Indirect wrapping will cause the entire
+     * sequence to be iterated, as it is the case for
+     * `from([1, 2]).where(n => n % 2 === 0).count()`.
      * 
      * @param {function(item: any): boolean} matches A function that should
      *     return `true` for all elements to be included in the count and
