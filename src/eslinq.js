@@ -120,34 +120,89 @@ export class Sequence {
     }
 
     /**
-     * Applies the specified transformation to all elements of the
-     * Sequence. The transformation should return an iterable. The
-     * resulting Sequence will be a concatenation of these iterables.
+     * Applies the specified transformations to all elements of the
+     * Sequence. The first transformation returns an iterable. The second
+     * one, if present, is called for each element of the output of the
+     * first, and returns an arbitrary value. The result is either a concatenation
+     * of the iterables returned by the first transformation, or a sequence
+     * containing the values returned by the second.
      * 
-     * @param {function(i: any): Iterable} transform A function that is
-     *     called for each Sequence element. Should return a iterable.
-     * @return {Sequence} A concatenation of the iterables returned by
-     *     the transformation function.
-     * @throws {Error} If the object returned by the transform function
-     *     is not iterable.
+     * @param {function(item: any, index: number): Iterable} getSequence A
+     *     function that returns an iterable for each sequence element. The 
+     *     first argument, `item`, is the current sequence element, the
+     *     second one, `index`, is the zero-based index of the current element.
+     * 
+     * @param {function(seq: Iterable, item: any): any} [transform] A function
+     *     that is called for each element of the iterables returned by
+     *     `getSequence`. The final sequence contains the output of this
+     *     function. The first argument, `seq`, is the current iterable, the
+     *     second, `item`, is the current element of that iterable.
+     * 
+     * @return {Sequence} A sequence of the values returned by the composition
+     *     of the transformation functions.
+     * 
+     * @throws {Error} If the object returned by `getSequence` is not iterable.
      * 
      * @example
+     * // Simple example, only the `getSequence` function is used
      * const taskLists = [
      *     {tasks: [1]}, {tasks: [2, 3]}, {tasks: [4]},
      *     {tasks: []}, {tasks: [5]}
      * ];
+     * 
      * const allTasks = from(taskLists).selectMany(t => t.tasks);
-     * for (let t of allTasks) console.log(t); // 1 2 3 4 5
+     * 
+     * for (let t of allTasks) {
+     *     console.log(t); // 1 2 3 4 5
+     * }
+     * 
+     * // Here we use both transformation functions
+     * const tasksByDate = [
+     *     {
+     *         date: "2015-09-20",
+     *         tasks: [
+     *             { id: 1, text: "buy groceries" },
+     *             { id: 2, text: "do laundry" },
+     *             { id: 3, text: "meet Janet" }
+     *         ]
+     *     },
+     *     // ... more objects like above ...
+     * ];
+     * 
+     * const allTasks =
+     *     from(tasksByDate)
+     *         .selectMany(date => date.tasks, (tasks, task) => task);
+     * 
+     * for (let task of allTasks) {
+     *     console.log(task);
+     * }
+     * 
+     * // Output:
+     * //     buy groceries
+     * //     do laundry
+     * //     meet Janet
+     * //     ...
      */
-    selectMany(transform) {
-        const iterable = this.iterable;
-        return this._wrap(function* () {
-            for (let i of iterable) {
-                const innerIter = transform(i);
-                ensureIsIterable(innerIter, "Transform function should return an iterable");
-                for (let j of innerIter) yield j;
+    selectMany(getSequence, transform = (_, n) => n) {
+        ensureIsFunction(getSequence, "`getSequence` should be a function");
+        ensureIsFunction(transform, "`transform` should be a function");
+
+        const generator = function* () {
+            let index = 0;
+
+            for (let item of this.iterable) {
+                const seq = getSequence(item, index);
+                ensureIsIterable(seq, "`getSequence` should return an iterable");
+
+                for (let innerItem of seq) {
+                    yield transform(item, innerItem);
+                }
+                
+                index++;
             }
-        });
+        }
+
+        return this._wrap(generator);
     }
 
     /**
