@@ -1,10 +1,10 @@
 {
-  "name": "fromjs",
+  "name": "eslinq.git",
   "version": "0.0.0",
   "description": "Lazily evaluated iterable tools for ECMAScript 6",
-  "main": "from.js",
+  "main": "src/eslinq.git",
   "scripts": {
-    "test": "node node_modules/jasmine-es6/bin/jasmine.js"
+    "test": "grunt test"
   },
   "keywords": [
     "iterator",
@@ -20,6 +20,10 @@
     "grunt-exec": "^0.4.6",
     "jasmine-es6": "0.0.17",
     "load-grunt-tasks": "^3.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/balazsbotond/eslinq.git"
   },
   "dependencies": {},
   "jest": {
