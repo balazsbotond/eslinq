@@ -7,22 +7,21 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    "dist/src/from.js": "src/from.js"//,
-                    //"dist/test/from.js": "test/from.js"
+                    "dist/src/eslinq.js": "src/eslinq.js"
                 }
             }
-        }//,
-        // jasmine : {
-        //     src: 'dist/src/**/*.js',
-        //     options : {
-        //         specs : 'dist/test/**/*.js'
-        //     }
-        // },
+        },
+        exec: {
+            test: {
+                command: "node node_modules/jasmine-es6/bin/jasmine.js"
+            }
+        }
     });
 
     grunt.loadNpmTasks("grunt-babel");
-//    grunt.loadNpmTasks("grunt-contrib-jasmine");
+    grunt.loadNpmTasks('grunt-exec');
 
-    grunt.registerTask("default", ["babel", /*"jasmine"*/]);
+    grunt.registerTask("test", ["exec:test"]);
+    grunt.registerTask("default", ["exec:test", "babel"]);
 
 };
