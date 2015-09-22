@@ -426,9 +426,70 @@ export class Sequence {
         return sum;
     }
     
-    count(matches = _ => true) {
+    /**
+     * Returns the number of elements in the `Sequence`.
+     * 
+     * If a `matches` function is specified, returns the number of matching
+     * elements.
+     * 
+     * **Complexity:**
+     * 
+     * - O(1) if the `Iterable` wrapped by this `Sequence` is an `Array`
+     * - O(n) for other `Iterable`s
+     * 
+     * *Note:*
+     * 
+     * The complexity is O(1) only if the `Array` is wrapped directly, like
+     * `from([1, 2]).count()`. Indirect wrapping will cause the entire sequence to
+     * be iterated, as is the case for `from([1, 2]).where(n => n % 2 === 0).count()`.
+     * 
+     * @param {function(item: any): boolean} matches A function that should
+     *     return `true` for all elements to be included in the count and
+     *     `false` for those to be excluded.
+     * 
+     * @return {number} The number of matching elements in the `Sequence`.
+     * 
+     * @throws {TypeError} if `matches` is specified, but it is not a function.
+     * 
+     * @example
+     * // No condition specified
+     * const numbers = [1, 2, 3, 4],
+     *       isEven = n => n % 2 === 0,
+     *       count = from(numbers).count();
+     * 
+     * console.log(count); // 4
+     * 
+     * // Count matching elements
+     * const numbers = [1, 2, 3, 4],
+     *       isEven = n => n % 2 === 0,
+     *       numberOfEvens = from(numbers).count(isEven);
+     * 
+     * console.log(numberOfEvens); // 2
+     */
+    count(matches) {
+        if (matches === undefined) {
+            // If the wrapped iterable is an `Array`, `Map` or `Set`,
+            // we can use these O(1) shortcuts to get the length.
+            if (this.iterable instanceof Array) {
+                return this.iterable.length;
+            } else if (
+                this.iterable instanceof Set ||
+                this.iterable instanceof Map) {
+                return this.iterable.size;
+            }
+            matches = _ => true;
+        } else {
+            ensureIsFunction(matches, "`matches` should be a function");
+        }
+
         let count = 0;
-        for (let i of this.iterable) if (matches(i)) count++;
+
+        for (let i of this.iterable) {
+            if (matches(i)) {
+                count++;
+            }
+        }
+
         return count;
     }
 
