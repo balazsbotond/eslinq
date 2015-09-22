@@ -56,6 +56,19 @@ const verifiedUserEmails =
 		.selectMany(user => user.emails);
 ```
 
+It is important to note that `verifiedUserEmails` is a *lazily evaluated iterable*: filtering
+and transformation is only done once we start iterating it, e. g. with a `for..of` loop:
+
+```javascript
+for (let email of verifiedUserEmails) {
+	// The first time this loop executes is the first time the original iterable is read from.
+	// Filtering (`where`) and transformation (`selectMany`) run element-by-element during iteration. 
+	console.log(email);
+}
+```
+
+Now let's check if all emails end in ".com":
+
 ```javascript
 const allEmailsEndWithCom =
     from(users)
@@ -64,7 +77,8 @@ const allEmailsEndWithCom =
 		.all(email => email.endsWith(".com"));
 ```
 
-The result is a bool value indicating whether all emails end with the substring ".com".
+The result is a bool value indicating whether all emails end with the substring ".com". The `all`
+operator is an *eager* one: it iterates through all elements to compute its value.
 
 <!--
     Links
