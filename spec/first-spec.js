@@ -11,6 +11,11 @@ describe(".first", () => {
 		expect(bomb).toThrowError("No matching element found");
 	});
 	
+	it("throws an error if called on an empty sequence with a constant true condition", () => {
+		const bomb = () => Sequence.empty().first(_ => true);
+		expect(bomb).toThrowError("No matching element found");
+	});
+	
 	it("throws an error if `matches` is not a function", () => {
 		const bomb = () => from([1]).first(1);
 		expect(bomb).toThrowError("`matches` should be a function");
