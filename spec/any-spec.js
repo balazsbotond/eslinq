@@ -5,6 +5,10 @@ import { identity, double, even } from "./helpers";
 
 describe(".any", () => {
 	
+	it("throws if it is called with a non-function argument", () => {
+		expect(() => from([1]).any(0)).toThrowError("`matches` should be a function");
+	});
+	
 	it("returns false when given an empty iterable and a constant true condition", () => {
 		expect(from([]).any(_ => true)).toBe(false);
 	});

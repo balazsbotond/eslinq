@@ -284,13 +284,29 @@ export class Sequence {
     /**
      * Determines whether at least one element satisfies a condition.
      * 
+     * Without a condition, `any` can be used to quickly test whether
+     * a sequence is empty. This is the preferred way of testing emptiness
+     * vs. `c.count() === 0`, as it always runs in O(1) time.
+     * 
      * @param {function(i: any): boolean} matches A function that
      *     determines whether an element of the Sequence satisfies
      *     a condition.
+     * 
      * @return {boolean} true if at least one element satisfies the
      *     condition, otherwise, false.
      * 
+     * @throws {TypeError} if `matches` is not a function
+     * 
      * @example
+     * // Without a condition, `any` can be used to quickly test whether
+     * // a sequence is empty.
+     * const empty = [],
+     *       nonEmpty = [1];
+     * 
+     * console.log(from(empty).any()); // true
+     * console.log(from(nonEmpty).any()); // false
+     * 
+     * // With a condition
      * const numbers = [1, 2, 3],
      *       even = [2, 4, 6],
      *       isOdd = n => n % 2 !== 0;
@@ -298,7 +314,14 @@ export class Sequence {
      * from(even).any(isOdd); // false
      */
     any(matches = _ => true) {
-        for (let i of this.iterable) if (matches(i)) return true;
+        ensureIsFunction(matches, "`matches` should be a function");
+
+        for (let i of this.iterable) {
+            if (matches(i)) {
+                return true;
+            }
+        }
+
         return false;
     }
 
