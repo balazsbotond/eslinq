@@ -65,8 +65,6 @@ export default function from(iterable) {
  */
 export class Sequence {
     constructor(iterable) {
-        if (iterable instanceof Sequence) iterable = iterable.iterable;
-
         this.iterable = iterable;
         this[Symbol.iterator] = iterable[Symbol.iterator];
     }
