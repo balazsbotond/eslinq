@@ -798,7 +798,7 @@ export class Sequence {
      *     `count` items, starting at `start`.
      * 
      * @throws {TypeError} if either `start` or `count` is not a number
-     * @throws {RangeError} if (1) count is negative
+     * @throws {RangeError} if count is negative
      * 
      * @example
      * for (let i of Sequence.range(2, 4)) {
