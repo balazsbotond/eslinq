@@ -132,11 +132,12 @@ export class Sequence {
      *     first argument, `item`, is the current sequence element, the
      *     second one, `index`, is the zero-based index of the current element.
      * 
-     * @param {function(seq: Iterable, item: any): any} [transform] A function
+     * @param {function(item: any, innerItem: any): any} [transform] A function
      *     that is called for each element of the iterables returned by
      *     `getSequence`. The final sequence contains the output of this
-     *     function. The first argument, `seq`, is the current iterable, the
-     *     second, `item`, is the current element of that iterable.
+     *     function. The first argument, `item`, is the current item of the original
+     *     sequence, the second, `innerItem`, is the current element of the iterable
+     *     returned by `getSequence`.
      * 
      * @return {Sequence} A sequence of the values returned by the composition
      *     of the transformation functions.
@@ -171,7 +172,7 @@ export class Sequence {
      * 
      * const allTasks =
      *     from(tasksByDate)
-     *         .selectMany(date => date.tasks, (tasks, task) => task);
+     *         .selectMany(date => date.tasks, (date, task) => task.text);
      * 
      * for (let task of allTasks) {
      *     console.log(task);
