@@ -77,7 +77,7 @@ export class Sequence {
      * Applies the specified transformation to all elements of the
      * `Sequence`, returning a new `Sequence` of the transformed elements.
      * 
-     * @param {function(item: any, index: number): any} transform A function
+     * @param {function(item: *, index: number): *} transform A function
      *     that is used to transform the elements of the sequence. The first
      *     argument, `item`, is the current sequence element, the second one,
      *     `index`, is the zero-based index of the current element.
@@ -125,12 +125,12 @@ export class Sequence {
      * of the iterables returned by the first transformation, or a sequence
      * containing the values returned by the second.
      * 
-     * @param {function(item: any, index: number): Iterable} getSequence A
+     * @param {function(item: *, index: number): Iterable} getSequence A
      *     function that returns an iterable for each sequence element. The 
      *     first argument, `item`, is the current sequence element, the
      *     second one, `index`, is the zero-based index of the current element.
      * 
-     * @param {function(item: any, innerItem: any): any} [transform] A function
+     * @param {function(item: *, innerItem: *): *} [transform] A function
      *     that is called for each element of the iterables returned by
      *     `getSequence`. The final sequence contains the output of this
      *     function. The first argument, `item`, is the current item of the original
@@ -207,7 +207,7 @@ export class Sequence {
     /**
      * Filters the Sequence by a condition specified.
      * 
-     * @param {function(item: any, index: number): boolean} matches A
+     * @param {function(item: *, index: number): boolean} matches A
      *     function that returns true if an element is to be included in 
      *     the result. The first argument, `item`, is the current sequence
      *     element, the second one, `index`, is the zero-based index of the
@@ -261,7 +261,7 @@ export class Sequence {
     /**
      * Determines whether all elements satisfy a condition.
      * 
-     * @param {function(i: any): boolean} matches A function that
+     * @param {function(i: *): boolean} matches A function that
      *     determines whether an element of the Sequence satisfies
      *     a condition.
      * 
@@ -297,7 +297,7 @@ export class Sequence {
      * a sequence is empty. This is the preferred way of testing emptiness
      * vs. `c.count() === 0`, as it always runs in O(1) time.
      * 
-     * @param {function(i: any): boolean} matches A function that
+     * @param {function(i: *): boolean} matches A function that
      *     determines whether an element of the Sequence satisfies
      *     a condition.
      * 
@@ -338,7 +338,7 @@ export class Sequence {
      * Determines whether at least one element is equal to the item specified
      * using the strict equality operator.
      * 
-     * @param {any} item The item to find.
+     * @param {*} item The item to find.
      * @return {boolean} true if at least one element is equal to the item
      *     specified, otherwise, false.
      * 
@@ -539,7 +539,7 @@ export class Sequence {
      * sequence to be iterated, as it is the case for
      * `from([1, 2]).where(n => n % 2 === 0).count()`.
      * 
-     * @param {function(item: any): boolean} matches A function that should
+     * @param {function(item: *): boolean} matches A function that should
      *     return `true` for all elements to be included in the count and
      *     `false` for those to be excluded.
      * 
@@ -621,10 +621,10 @@ export class Sequence {
      * 
      * **Evaluation:** eager
      * 
-     * @param {function(i: any): boolean} [matches] A function that returns
+     * @param {function(i: *): boolean} [matches] A function that returns
      * `true` if an element satisfies a condition, `false` otherwise.
      * 
-     * @return {any} The first (matching) element. 
+     * @return {*} The first (matching) element. 
      * 
      * @throws {RangeError} if the sequence contains no elements or no
      *     matching element has been found.
@@ -662,10 +662,10 @@ export class Sequence {
      * 
      * **Evaluation:** eager
      * 
-     * @param {any} [defaultValue=undefined] The default value to return
+     * @param {*} [defaultValue=undefined] The default value to return
      * if the sequence contains no (matching) elements.
      * 
-     * @param {function(i: any): boolean} [matches] A function that returns
+     * @param {function(i: *): boolean} [matches] A function that returns
      * `true` if an element satisfies a condition, `false` otherwise.
      */
     firstOrDefault(defaultValue, matches = _ => true) {
@@ -810,7 +810,7 @@ export class Sequence {
      * Returns a `Sequence` that contains the specified element repeated
      * the specified number of times.
      * 
-     * @param {any} item The item to be repeated.
+     * @param {*} item The item to be repeated.
      * @param {number} count How many times to repeat the item.
      * 
      * @return {Sequence} A `Sequence` that contains the specified element
