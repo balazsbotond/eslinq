@@ -663,10 +663,32 @@ export class Sequence {
      * **Evaluation:** eager
      * 
      * @param {*} [defaultValue=undefined] The default value to return
-     * if the sequence contains no (matching) elements.
+     *     if the sequence contains no (matching) elements.
      * 
      * @param {function(i: *): boolean} [matches] A function that returns
-     * `true` if an element satisfies a condition, `false` otherwise.
+     *     `true` if an element satisfies a condition, `false` otherwise.
+     * 
+     * @return {*} The first (matching) element of the sequence or the default
+     *     value
+     * 
+     * @example
+     * // Get first element of a non-empty sequence
+     * const numbers = [1, 2, 3];
+     * console.log(from(numbers).firstOrDefault()); // Output: 1
+     * 
+     * // Try to get first element of an empty sequence. No default value specified.
+     * console.log(from([]).firstOrDefault); // Output: undefined
+     * 
+     * // Try to get first element of an empty sequence. -1 is specified as a default.
+     * console.log(from([]).firstOrDefault(0)); // Output: 0
+     * 
+     * // Get first matching element of a sequence with a matching element
+     * const numbers = [1, 2, 3];
+     * console.log(from(numbers).firstOrDefault(0, n => n % 2 === 0)); // Output: 2
+     * 
+     * // Get first matching element of a sequence without a matching element
+     * const numbers = [1, 3, 5];
+     * console.log(from(numbers).firstOrDefault(0, n => n % 2 === 0)); // Output: 0
      */
     firstOrDefault(defaultValue, matches = _ => true) {
         ensureIsFunction(matches, "`matches` should be a function");
