@@ -528,6 +528,9 @@ export class Sequence {
      * If a `matches` function is specified, returns the number of matching
      * elements.
      * 
+     * **Note:** To quickly test whether a sequence is empty, use `.any()` instead
+     * of `.count() === 0` as the former always runs in O(1) time.
+     * 
      * **Complexity:**
      * 
      * - O(1) if the `Iterable` wrapped by this `Sequence` is an `Array`, `Map` or `Set`
