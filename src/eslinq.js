@@ -615,9 +615,44 @@ export class Sequence {
         return undefined;
     }
     
+    /**
+     * Returns the first element of the sequence. If a `matches` function
+     * is specified, it returns the first matching element.
+     * 
+     * **Evaluation:** eager
+     * 
+     * @param {function(i: any): boolean} [matches] A function that returns
+     * `true` if an element satisfies a condition, `false` otherwise.
+     * 
+     * @return {any} The first (matching) element. 
+     * 
+     * @throws {RangeError} if the sequence contains no elements or no
+     *     matching element has been found.
+     * 
+     * @example
+     * // No condition specified, simply retrieve the first element of
+     * // the sequence:
+     * const numbers = [1, 2, 3, 4, 5],
+     *       first = from(numbers).first();
+     * 
+     * console.log(first); // 1
+     * 
+     * // Getting the first element that matches a condition:
+     * const numbers = [1, 2, 3, 4, 5],
+     *       firstEven = from(numbers).first(n => n % 2 === 0);
+     * 
+     * console.log(firstEven); // 2
+     */
     first(matches = _ => true) {
-        for (let i of this.iterable) if (matches(i)) return i;
-        throw "No matching element found";
+        ensureIsFunction(matches, "`matches` should be a function");
+
+        for (let i of this.iterable) {
+            if (matches(i)) {
+                return i;
+            }
+        }
+
+        throw new RangeError("No matching element found");
     }
     
     firstOrDefault(matches = _ => true, defaultValue) {
