@@ -655,8 +655,28 @@ export class Sequence {
         throw new RangeError("No matching element found");
     }
     
-    firstOrDefault(matches = _ => true, defaultValue) {
-        for (let i of this.iterable) if (matches(i)) return i;
+    /**
+     * Returns the first element of a sequence or a user-specified default value.
+     * If a `matches` function is specified, it returns the first matching
+     * element or the default value.
+     * 
+     * **Evaluation:** eager
+     * 
+     * @param {any} [defaultValue=undefined] The default value to return
+     * if the sequence contains no (matching) elements.
+     * 
+     * @param {function(i: any): boolean} [matches] A function that returns
+     * `true` if an element satisfies a condition, `false` otherwise.
+     */
+    firstOrDefault(defaultValue, matches = _ => true) {
+        ensureIsFunction(matches, "`matches` should be a function");
+
+        for (let i of this.iterable) {
+            if (matches(i)) {
+                return i;
+            }
+        }
+
         return defaultValue;
     }
     
@@ -667,7 +687,7 @@ export class Sequence {
         return result.item;
     }
     
-    lastOrDefault(matches = _ => true, defaultValue) {
+    lastOrDefault(defaultValue, matches = _ => true) {
         const result = this._last(matches);
         if (!result.found)
             return defaultValue;
@@ -688,7 +708,7 @@ export class Sequence {
         return result.item;
     }
     
-    singleOrDefault(matches = _ => true, defaultValue) {
+    singleOrDefault(defaultValue, matches = _ => true) {
         const result = this._single(matches);
         if (!result.found)
             return defaultValue;
