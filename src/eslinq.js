@@ -266,18 +266,29 @@ export class Sequence {
      * @param {function(i: any): boolean} matches A function that
      *     determines whether an element of the Sequence satisfies
      *     a condition.
+     * 
      * @return {boolean} true if all elements satisfy the condition,
      *     otherwise, false.
+     * 
+     * @throws {TypeError} if `matches` is not a function
      * 
      * @example
      * const numbers = [1, 2, 3],
      *       even = [2, 4, 6],
      *       isEven = n => n % 2 === 0;
+     * 
      * from(numbers).all(isEven); // false
      * from(even).all(isEven); // true
      */
     all(matches) {
-        for (let i of this.iterable) if (!matches(i)) return false;
+        ensureIsFunction(matches, "`matches` should be a function");
+
+        for (let i of this.iterable) {
+            if (!matches(i)) {
+                return false;
+            }
+        }
+
         return true;
     }
 
