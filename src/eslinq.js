@@ -679,7 +679,7 @@ export class Sequence {
      * // Try to get first element of an empty sequence. No default value specified.
      * console.log(from([]).firstOrDefault); // Output: undefined
      * 
-     * // Try to get first element of an empty sequence. -1 is specified as a default.
+     * // Try to get first element of an empty sequence. 0 is specified as a default.
      * console.log(from([]).firstOrDefault(0)); // Output: 0
      * 
      * // Get first matching element of a sequence with a matching element
