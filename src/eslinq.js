@@ -293,7 +293,7 @@ export class Sequence {
     /**
      * Determines whether at least one element satisfies a condition.
      * 
-     * Without a condition, `any` can be used to quickly test whether
+     * Without a condition, `!c.any()` can be used to quickly test whether
      * a sequence is empty. This is the preferred way of testing emptiness
      * vs. `c.count() === 0`, as it always runs in O(1) time.
      * 
@@ -312,8 +312,8 @@ export class Sequence {
      * const empty = [],
      *       nonEmpty = [1];
      * 
-     * console.log(from(empty).any()); // true
-     * console.log(from(nonEmpty).any()); // false
+     * console.log(from(empty).any()); // false
+     * console.log(from(nonEmpty).any()); // true
      * 
      * // With a condition
      * const numbers = [1, 2, 3],
@@ -526,7 +526,7 @@ export class Sequence {
      * If a `matches` function is specified, returns the number of matching
      * elements.
      * 
-     * **Note:** To quickly test whether a sequence is empty, use `.any()` instead
+     * **Note:** To quickly test whether a sequence is empty, use `!c.any()` instead
      * of `.count() === 0` as the former always runs in O(1) time.
      * 
      * **Complexity:**
