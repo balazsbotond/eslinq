@@ -45,7 +45,7 @@ describe(".firstOrDefault", () => {
 		expect(from([1]).firstOrDefault(0, n => n === 2)).toBe(0);
 	});
 	
-	it("returns the first element if called n a multiple-element sequence without a condition", () => {
+	it("returns the first element if called on a multiple-element sequence without a condition", () => {
 		expect(from([3, 4]).firstOrDefault()).toBe(3);
 	});
 	
