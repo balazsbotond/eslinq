@@ -29,9 +29,9 @@ describe(".selectMany", () => {
 
 	const getPets = o => o.pets;
 	
-	it("throws if `getSequence` is not a function", () => {
+	it("throws if `getIterable` is not a function", () => {
 		const bomb = () => from([]).selectMany(1);
-		expect(bomb).toThrowError("`getSequence` should be a function");
+		expect(bomb).toThrowError("`getIterable` should be a function");
 	});
 	
 	it("throws if `transform` is not a function", () => {
@@ -46,10 +46,10 @@ describe(".selectMany", () => {
 		expect(actual).toEqual(expected);
 	});
 	
-	it("throws an error if `getSequence` does not return an iterable", () => {
+	it("throws an error if `getIterable` does not return an iterable", () => {
 		const original = [1, 2],
 			wrapper = () => from(original).selectMany(identity).toArray(),
-			expectedError = "`getSequence` should return an iterable";
+			expectedError = "`getIterable` should return an iterable";
 		expect(wrapper).toThrowError(expectedError);
 	});
 	
@@ -59,7 +59,7 @@ describe(".selectMany", () => {
 		expect(actual).toEqual(expected);
 	});
 	
-	it("behaves correctly if `getSequence` returns an empty iterable", () => {
+	it("behaves correctly if `getIterable` returns an empty iterable", () => {
 		const original = [[1], [], [2], []],
 			expected = [1, 2],
 			actual = from(original).selectMany(identity).toArray();
@@ -76,7 +76,7 @@ describe(".selectMany", () => {
 		expect(actual).toEqual(expected);
 	});
 	
-	it("passes the index of the current element to `getSequence`", () => {
+	it("passes the index of the current element to `getIterable`", () => {
 		const original = [[3], [6], [9]],
 		      expected = [0, 1, 2],
 			  getIndex = (item, index) => [index],

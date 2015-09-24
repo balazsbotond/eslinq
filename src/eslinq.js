@@ -126,25 +126,25 @@ export class Sequence {
      * of the iterables returned by the first transformation, or a sequence
      * containing the values returned by the second.
      * 
-     * @param {function(item: *, index: number): Iterable} getSequence A
+     * @param {function(item: *, index: number): Iterable} getIterable A
      *     function that returns an iterable for each sequence element. The 
      *     first argument, `item`, is the current sequence element, the
      *     second one, `index`, is the zero-based index of the current element.
      * 
      * @param {function(item: *, innerItem: *): *} [transform] A function
      *     that is called for each element of the iterables returned by
-     *     `getSequence`. The final sequence contains the output of this
+     *     `getIterable`. The final sequence contains the output of this
      *     function. The first argument, `item`, is the current item of the original
      *     sequence, the second, `innerItem`, is the current element of the iterable
-     *     returned by `getSequence`.
+     *     returned by `getIterable`.
      * 
      * @return {Sequence} A sequence of the values returned by the composition
      *     of the transformation functions.
      * 
-     * @throws {Error} If the object returned by `getSequence` is not iterable.
+     * @throws {Error} If the object returned by `getIterable` is not iterable.
      * 
      * @example
-     * // Simple example, only the `getSequence` function is used
+     * // Simple example, only the `getIterable` function is used
      * const taskLists = [
      *     {tasks: [1]}, {tasks: [2, 3]}, {tasks: [4]},
      *     {tasks: []}, {tasks: [5]}
@@ -183,16 +183,16 @@ export class Sequence {
      * //     meet Janet
      * //     ...
      */
-    selectMany(getSequence, transform = (_, n) => n) {
-        ensureIsFunction(getSequence, "`getSequence` should be a function");
+    selectMany(getIterable, transform = (_, n) => n) {
+        ensureIsFunction(getIterable, "`getIterable` should be a function");
         ensureIsFunction(transform, "`transform` should be a function");
 
         const generator = function* () {
             let index = 0;
 
             for (let item of this.iterable) {
-                const innerIterable = getSequence(item, index);
-                ensureIsIterable(innerIterable, "`getSequence` should return an iterable");
+                const innerIterable = getIterable(item, index);
+                ensureIsIterable(innerIterable, "`getIterable` should return an iterable");
 
                 for (let innerItem of innerIterable) {
                     yield transform(item, innerItem);
