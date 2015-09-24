@@ -670,7 +670,7 @@ export class Sequence {
      *     `true` if an element satisfies a condition, `false` otherwise.
      * 
      * @return {*} The first (matching) element of the sequence or the default
-     *     value
+     *     value.
      * 
      * @example
      * // Get first element of a non-empty sequence
@@ -678,7 +678,7 @@ export class Sequence {
      * console.log(from(numbers).firstOrDefault()); // Output: 1
      * 
      * // Try to get first element of an empty sequence. No default value specified.
-     * console.log(from([]).firstOrDefault); // Output: undefined
+     * console.log(from([]).firstOrDefault()); // Output: undefined
      * 
      * // Try to get first element of an empty sequence. 0 is specified as a default.
      * console.log(from([]).firstOrDefault(0)); // Output: 0
@@ -756,7 +756,7 @@ export class Sequence {
      *     `true` if an element satisfies a condition, `false` otherwise.
      * 
      * @return {*} The last (matching) element of the sequence or the default
-     *     value
+     *     value.
      * 
      * @example
      * // Get last element of a non-empty sequence
@@ -764,7 +764,7 @@ export class Sequence {
      * console.log(from(numbers).lastOrDefault()); // Output: 3
      * 
      * // Try to get last element of an empty sequence. No default value specified.
-     * console.log(from([]).lastOrDefault); // Output: undefined
+     * console.log(from([]).lastOrDefault()); // Output: undefined
      * 
      * // Try to get last element of an empty sequence. 0 is specified as a default.
      * console.log(from([]).lastOrDefault(0)); // Output: 0
