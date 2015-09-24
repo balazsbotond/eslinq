@@ -683,8 +683,8 @@ export class Sequence {
      * // Try to get first element of an empty sequence. 0 is specified as a default.
      * console.log(from([]).firstOrDefault(0)); // Output: 0
      * 
-     * // Get first matching element of a sequence with a matching element
-     * const numbers = [1, 2, 3];
+     * // Get first matching element of a sequence with matching elements
+     * const numbers = [1, 2, 3, 4];
      * console.log(from(numbers).firstOrDefault(0, n => n % 2 === 0)); // Output: 2
      * 
      * // Get first matching element of a sequence without a matching element
@@ -742,8 +742,46 @@ export class Sequence {
         return result.item;
     }
     
+    /**
+     * Returns the last element of a sequence or a user-specified default value.
+     * If a `matches` function is specified, it returns the last matching
+     * element or the default value.
+     * 
+     * **Evaluation:** eager
+     * 
+     * @param {*} [defaultValue=undefined] The default value to return
+     *     if the sequence contains no (matching) elements.
+     * 
+     * @param {function(i: *): boolean} [matches] A function that returns
+     *     `true` if an element satisfies a condition, `false` otherwise.
+     * 
+     * @return {*} The last (matching) element of the sequence or the default
+     *     value
+     * 
+     * @example
+     * // Get last element of a non-empty sequence
+     * const numbers = [1, 2, 3];
+     * console.log(from(numbers).lastOrDefault()); // Output: 3
+     * 
+     * // Try to get last element of an empty sequence. No default value specified.
+     * console.log(from([]).lastOrDefault); // Output: undefined
+     * 
+     * // Try to get last element of an empty sequence. 0 is specified as a default.
+     * console.log(from([]).lastOrDefault(0)); // Output: 0
+     * 
+     * // Get last matching element of a sequence with matching elements
+     * const numbers = [1, 2, 3, 4];
+     * console.log(from(numbers).lastOrDefault(0, n => n % 2 === 0)); // Output: 4
+     * 
+     * // Get last matching element of a sequence without a matching element
+     * const numbers = [1, 3, 5, 7];
+     * console.log(from(numbers).lastOrDefault(0, n => n % 2 === 0)); // Output: 0
+     */
     lastOrDefault(defaultValue, matches = _ => true) {
+        ensureIsFunction(matches, "`matches` should be a function");
+
         const result = this._last(matches);
+
         return result.found ? result.item : defaultValue;
     }
     
