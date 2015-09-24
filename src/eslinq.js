@@ -50,6 +50,7 @@
  *     from(numbers)
  *         .where(n => n % 2 === 0)
  *         .select(n => n * n);
+ * 
  * for (let n of squaresOfEvenNumbers)
  *     console.log(n); // 4 16
  */
@@ -702,18 +703,48 @@ export class Sequence {
         return defaultValue;
     }
     
+    /**
+     * Returns the last element of the sequence. If a `matches` function
+     * is specified, it returns the last matching element.
+     * 
+     * **Evaluation:** eager
+     * 
+     * @param {function(i: *): boolean} [matches] A function that returns
+     * `true` if an element satisfies a condition, `false` otherwise.
+     * 
+     * @return {*} The last (matching) element. 
+     * 
+     * @throws {RangeError} if the sequence contains no elements or no
+     *     matching element has been found.
+     * 
+     * @example
+     * // No condition specified, simply retrieve the last element of
+     * // the sequence:
+     * const numbers = [1, 2, 3, 4, 5],
+     *       last = from(numbers).last();
+     * 
+     * console.log(last); // 5
+     * 
+     * // Getting the last element that matches a condition:
+     * const numbers = [1, 2, 3, 4, 5],
+     *       lastEven = from(numbers).last(n => n % 2 === 0);
+     * 
+     * console.log(lastEven); // 4
+     */
     last(matches = _ => true) {
+        ensureIsFunction(matches, "`matches` should be a function");
+        
         const result = this._last(matches);
-        if (!result.found)
-            throw "No matching element found";
+
+        if (!result.found) {
+            throw RangeError("No matching element found");
+        }
         return result.item;
     }
     
     lastOrDefault(defaultValue, matches = _ => true) {
         const result = this._last(matches);
-        if (!result.found)
-            return defaultValue;
-        return result.item;
+        return result.found ? result.item : defaultValue;
     }
     
     _last(matches = _ => true) {
