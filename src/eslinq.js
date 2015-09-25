@@ -734,12 +734,12 @@ export class Sequence {
     last(matches = _ => true) {
         ensureIsFunction(matches, "`matches` should be a function");
         
-        const result = this._last(matches);
+        const { found, item } = this._last(matches);
 
-        if (!result.found) {
+        if (!found) {
             throw RangeError("No matching element found");
         }
-        return result.item;
+        return item;
     }
     
     /**
@@ -780,23 +780,73 @@ export class Sequence {
     lastOrDefault(defaultValue, matches = _ => true) {
         ensureIsFunction(matches, "`matches` should be a function");
 
-        const result = this._last(matches);
+        const { found, item } = this._last(matches);
 
-        return result.found ? result.item : defaultValue;
+        return found ? item : defaultValue;
     }
     
     _last(matches = _ => true) {
         let found = false, item;
-        for (let i of this.iterable)
-            if (matches(i)) { item = i; found = true; }
+
+        for (let i of this.iterable) {
+            if (matches(i)) { 
+                item = i;
+                found = true;
+            }
+        }
+
         return { found, item };
     }
     
+    /**
+     * Returns the only element of the sequence. If a `matches` function
+     * is specified, it returns the single matching element.
+     * 
+     * **Evaluation:** eager
+     * 
+     * @param {function(i: *): boolean} [matches] A function that returns
+     * `true` if an element satisfies a condition, `false` otherwise.
+     * 
+     * @return {*} The single (matching) element. 
+     * 
+     * @throws {RangeError} if the sequence contains no elements, if no
+     *     matching element has been found, if the sequence contains more
+     *     than one (matching) element.
+     * 
+     * @example
+     * // No condition specified, simply retrieve the only element of
+     * // the sequence:
+     * const numbers = [1],
+     *       single = from(numbers).single();
+     * 
+     * console.log(single); // 1
+     * 
+     * // Getting the only element that matches a condition:
+     * const numbers = [1, 2, 3],
+     *       singleEven = from(numbers).single(n => n % 2 === 0);
+     * 
+     * console.log(singleEven); // 2
+     * 
+     * // `single` can be used to express that we expect only one matching
+     * // element when the presence of more than one matching elements is
+     * // a programming error:
+     * 
+     * // this is expected to contain only one even number
+     * const numbers = [1, 2, 3, 4, 5];
+     * 
+     * // BOOM! this throws a RangeError because the sequence contains more
+     * // than one matching element
+     * const even = from(numbers).single(even);
+     */
     single(matches = _ => true) {
-        const result = this._single(matches);
-        if (!result.found)
-            throw "No matching element found";
-        return result.item;
+        ensureIsFunction(matches, "`matches` should be a function");
+        
+        const { found, item } = this._single(matches);
+
+        if (!found) {
+            throw RangeError("No matching element found");
+        }
+        return item;
     }
     
     singleOrDefault(defaultValue, matches = _ => true) {
@@ -808,14 +858,18 @@ export class Sequence {
     
     _single(matches = _ => true) {
         let found = false, item;
+
         for (let i of this.iterable) {
             if (matches(i)) {
-                if (found)
-                    throw "Sequence contains more than one matching element";
+                if (found) {
+                    throw RangeError(
+                        "Sequence contains more than one matching element");
+                }
                 item = i;
                 found = true;
             }
         }
+
         return { found, item };
     }
     
