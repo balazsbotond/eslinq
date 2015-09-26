@@ -627,6 +627,8 @@ export class Sequence {
      * 
      * @return {*} The first (matching) element. 
      * 
+     * @throws {TypeError} if `matches` is not a function
+     * 
      * @throws {RangeError} if the sequence contains no elements or no
      *     matching element has been found.
      * 
@@ -672,6 +674,8 @@ export class Sequence {
      * @return {*} The first (matching) element of the sequence or the default
      *     value.
      * 
+     * @throws {TypeError} if `matches` is not a function
+     * 
      * @example
      * // Get first element of a non-empty sequence
      * const numbers = [1, 2, 3];
@@ -713,6 +717,8 @@ export class Sequence {
      * `true` if an element satisfies a condition, `false` otherwise.
      * 
      * @return {*} The last (matching) element. 
+     * 
+     * @throws {TypeError} if `matches` is not a function
      * 
      * @throws {RangeError} if the sequence contains no elements or no
      *     matching element has been found.
@@ -757,6 +763,8 @@ export class Sequence {
      * 
      * @return {*} The last (matching) element of the sequence or the default
      *     value.
+     * 
+     * @throws {TypeError} if `matches` is not a function
      * 
      * @example
      * // Get last element of a non-empty sequence
@@ -812,6 +820,8 @@ export class Sequence {
      * `true` if an element satisfies a condition, `false` otherwise.
      * 
      * @return {*} The single (matching) element. 
+     * 
+     * @throws {TypeError} if `matches` is not a function
      * 
      * @throws {RangeError} if the sequence contains no elements, if no
      *     matching element has been found, if the sequence contains more
@@ -873,6 +883,9 @@ export class Sequence {
      * @return {*} The single (matching) element of the sequence or the default
      *     value.
      * 
+     * @throws {TypeError} if `matches` is not a function
+     * @throws {RangeError} if the sequence contains more than one matching element
+     * 
      * @example
      * // Get the only element of a non-empty sequence
      * const numbers = [1];
@@ -924,6 +937,70 @@ export class Sequence {
         }
 
         return { found, item };
+    }
+    
+    /**
+     * Returns a sequence containing a default value if the input sequence
+     * is empty; otherwise returns the input sequence.
+     * 
+     * **Evaluation:** lazy
+     * 
+     * @param {*} [defaultValue] if the input sequence is empty, the result
+     *     is a sequence containing this value. 
+     * 
+     * @return {Sequence} a sequence containing a default value if the input
+     *     sequence is empty; otherwise the input sequence.
+     * 
+     * @example
+     * // If the input sequence is not empty, the result is the original
+     * // sequence
+     * const ex1 = from([1, 2]).defaultIfEmpty();
+     * 
+     * for (let i of ex1) {
+     *     console.log(i);
+     * }
+     * 
+     * // Output:
+     * //     1
+     * //     2
+     * 
+     * // If the input sequence is empty, the result is a sequence containing
+     * // one `undefined` value
+     * const ex2 = from([]).defaultIfEmpty();
+     * 
+     * for (let i of ex2) {
+     *     console.log(i);
+     * }
+     * 
+     * // Output:
+     * //     undefined
+     * 
+     * // If the input sequence is empty and a default value is specified,
+     * // the result is a sequence the only item of which is the default value
+     * const ex3 = from([]).defaultIfEmpty(0);
+     * 
+     * for (let i of ex2) {
+     *     console.log(i);
+     * }
+     * 
+     * // Output:
+     * //     0
+     */
+    defaultIfEmpty(defaultValue) {
+        const generator = function* () {
+            let empty = true;
+
+            for (let i of this.iterable) {
+                empty = false;
+                yield i;
+            }
+
+            if (empty) {
+                yield defaultValue;
+            }
+        };
+        
+        return this._wrap(generator);
     }
     
     skip(count) {
