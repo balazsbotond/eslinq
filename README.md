@@ -3,6 +3,8 @@ ESLinq
 
 ***An elegant way of working with iterables***
 
+> **WARNING:** this is a beta version. Feel free to play around with it but don't use it in production.
+
 *ESLinq* aims to be a complete, robust, thoroughly tested port of [Linq to Objects][linq-to-objects]
 to ECMAScript 2015 (ES6).
 
