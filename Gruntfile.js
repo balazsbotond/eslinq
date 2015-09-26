@@ -4,11 +4,12 @@ module.exports = function(grunt) {
 
         babel: {
             options: {
-                sourceMap: true
+                sourceMap: true,
+                optional: "runtime"
             },
             dist: {
                 files: {
-                    "dist/src/eslinq.js": "src/eslinq.js"
+                    "out/src/eslinq.js": "src/eslinq.js"
                 }
             }
         },
@@ -18,11 +19,19 @@ module.exports = function(grunt) {
                 command: "node node_modules/jasmine-es6/bin/jasmine.js"
             }
         },
-        
+
         watch: {
             scripts: {
                 files: ["src/**/*.js", "spec/**/*.js"],
                 tasks: ["exec:test"]
+            }
+        },
+        
+        copy: {
+            main: {
+                files: [
+                    { expand: true, cwd: "out/src", src: ["**/*.js"], dest: "dist" }
+                ]
             }
         }
 
@@ -31,8 +40,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-babel");
     grunt.loadNpmTasks('grunt-exec');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
-    grunt.registerTask("default", ["exec:test", "babel"]);
+    grunt.registerTask("default", ["exec:test", "babel", "copy"]);
     grunt.registerTask("test", ["exec:test"]);
 
 };

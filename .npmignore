@@ -1,0 +1,9 @@
+docs
+node_modules
+out
+spec
+src
+typings
+esdoc.json
+Gruntfile.js
+jsconfig.json
