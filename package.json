@@ -26,18 +26,5 @@
     "type": "git",
     "url": "git://github.com/balazsbotond/eslinq.git"
   },
-  "dependencies": {},
-  "jest": {
-    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
-    "testFileExtensions": [
-      "es6",
-      "js"
-    ],
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "es6"
-    ],
-    "testDirectoryName": "test"
-  }
+  "dependencies": {}
 }
