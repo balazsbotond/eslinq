@@ -1,6 +1,6 @@
 {
   "name": "eslinq",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "An elegant way of working with ES6 iterables",
   "main": "dist/eslinq.js",
   "scripts": {
