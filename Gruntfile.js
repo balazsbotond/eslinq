@@ -19,7 +19,7 @@ module.exports = function(grunt) {
                 command: "node node_modules/jasmine-es6/bin/jasmine.js"
             },
             publish: {
-                command: "npm publish"
+                command: "npm publish --tag beta"
             }
         },
 
