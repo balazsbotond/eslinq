@@ -4,8 +4,7 @@
   "description": "An elegant way of working with ES6 iterables",
   "main": "dist/eslinq.js",
   "scripts": {
-    "test": "grunt test",
-    "prepublish": "grunt"
+    "test": "grunt test"
   },
   "keywords": [
     "iterator",

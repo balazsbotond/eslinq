@@ -17,6 +17,9 @@ module.exports = function(grunt) {
         exec: {
             test: {
                 command: "node node_modules/jasmine-es6/bin/jasmine.js"
+            },
+            publish: {
+                command: "npm publish"
             }
         },
 
@@ -44,5 +47,6 @@ module.exports = function(grunt) {
 
     grunt.registerTask("default", ["exec:test", "babel", "copy"]);
     grunt.registerTask("test", ["exec:test"]);
+    grunt.registerTask("publish", ["default", "exec:publish"]);
 
 };
