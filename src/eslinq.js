@@ -988,15 +988,17 @@ export class Sequence {
      */
     defaultIfEmpty(defaultValue) {
         const generator = function* () {
-            let empty = true;
+            const iterator = this.iterable[Symbol.iterator]();
+            let next = iterator.next();
 
-            for (let i of this.iterable) {
-                empty = false;
-                yield i;
+            if (next.done) {
+                yield defaultValue;
+                return;
             }
 
-            if (empty) {
-                yield defaultValue;
+            while (!next.done) {
+                yield next.value;
+                next = iterator.next();
             }
         };
         
