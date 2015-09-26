@@ -3,3 +3,4 @@ out
 node_modules
 docs
 typings
+npm-debug.log
