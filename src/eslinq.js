@@ -804,6 +804,10 @@ export class Sequence {
      * 
      * **Evaluation:** eager
      * 
+     * **Note:** `singleOrDefault` can be used to express that a sequence should
+     * contain at most one (matching) element, and the presence of multiple (matching)
+     * elements is an error.
+     * 
      * @param {function(i: *): boolean} [matches] A function that returns
      * `true` if an element satisfies a condition, `false` otherwise.
      * 
@@ -849,11 +853,61 @@ export class Sequence {
         return item;
     }
     
+    /**
+     * Returns the single element of a sequence or a user-specified default value.
+     * If a `matches` function is specified, it returns the single matching
+     * element or the default value.
+     * 
+     * **Evaluation:** eager
+     * 
+     * **Note:** `singleOrDefault` can be used to express that a sequence should
+     * contain at most one (matching) element, and the presence of multiple (matching)
+     * elements is an error.
+     * 
+     * @param {*} [defaultValue=undefined] The default value to return
+     *     if the sequence contains no (matching) elements.
+     * 
+     * @param {function(i: *): boolean} [matches] A function that returns
+     *     `true` if an element satisfies a condition, `false` otherwise.
+     * 
+     * @return {*} The single (matching) element of the sequence or the default
+     *     value.
+     * 
+     * @example
+     * // Get the only element of a non-empty sequence
+     * const numbers = [1];
+     * console.log(from(numbers).singleOrDefault()); // Output: 1
+     * 
+     * // Try to get the single element of an empty sequence. No default value specified.
+     * console.log(from([]).singleOrDefault()); // Output: undefined
+     * 
+     * // Try to get single element of an empty sequence. 0 is specified as a default.
+     * console.log(from([]).singleOrDefault(0)); // Output: 0
+     * 
+     * // Get single matching element of a sequence with matching elements
+     * const numbers = [1, 2, 3];
+     * console.log(from(numbers).singleOrDefault(0, n => n % 2 === 0)); // Output: 2
+     * 
+     * // Get last matching element of a sequence without a matching element
+     * const numbers = [1, 3, 5, 7];
+     * console.log(from(numbers).singleOrDefault(0, n => n % 2 === 0)); // Output: 0
+     * 
+     * // Get single matching element of a sequence with multiple matching elements
+     * const numbers = [1, 2, 3, 4];
+     * 
+     * // BOOM! This throws a `RangeError`:
+     * console.log(from(numbers).singleOrDefault(0, n => n % 2 === 0));
+     */
     singleOrDefault(defaultValue, matches = _ => true) {
-        const result = this._single(matches);
-        if (!result.found)
+        ensureIsFunction(matches, "`matches` should be a function");
+        
+        const { found, item } = this._single(matches);
+        
+        if (!found) {
             return defaultValue;
-        return result.item;
+        }
+        
+        return item;
     }
     
     _single(matches = _ => true) {
@@ -862,8 +916,7 @@ export class Sequence {
         for (let i of this.iterable) {
             if (matches(i)) {
                 if (found) {
-                    throw RangeError(
-                        "Sequence contains more than one matching element");
+                    throw RangeError("Sequence contains more than one matching element");
                 }
                 item = i;
                 found = true;
