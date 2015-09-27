@@ -32,8 +32,6 @@
  *
  */
 
-"use strict";
-
 /**
  * Helper function that wraps the specified iterable instance in an
  * ESLinq Sequence which can be queried using ESLinq operators (like
@@ -459,12 +457,26 @@ export class Sequence {
      * Ordering methods
      */
 
+    /**
+     * Returns a new sequence that contains the elements of the original ordered by
+     * the return value of the `get` function. An optional `compare` function can
+     * also be specified to implement custom comparison logic (by default, the
+     * `orderBy` operator orders the sequence based on the result of the standard
+     * ECMAScript comparison operators).
+     */
      orderBy(get, compare = compareDefault) {
         let result = Array.from(this.iterable);
         result.sort((a, b) => compare(get(a), get(b)));
         return new Sequence(result);
      }
 
+    /**
+     * Returns a new sequence that contains the elements of the original in descending order,
+     * ordered by the return value of the `get` function. An optional `compare` function can
+     * also be specified to implement custom comparison logic (by default, the
+     * `orderBy` operator orders the sequence based on the result of the standard
+     * ECMAScript comparison operators).
+     */
      orderByDescending(get, compare = compareDefault) {
         let result = Array.from(this.iterable);
         result.sort((a, b) => compare(get(b), get(a)));
