@@ -459,7 +459,7 @@ export class Sequence {
      * Ordering methods
      */
 
-    /*
+    /**
      * Returns a new sequence that contains the elements of the original ordered by
      * the return value of the `get` function. An optional `compare` function can
      * also be specified to implement custom comparison logic (by default, the
