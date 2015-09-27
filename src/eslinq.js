@@ -32,8 +32,6 @@
  *
  */
 
-"use strict";
-
 /**
  * Helper function that wraps the specified iterable instance in an
  * ESLinq Sequence which can be queried using ESLinq operators (like
