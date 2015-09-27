@@ -496,10 +496,85 @@ export class Sequence {
      * Aggregate methods
      */
 
-    aggregate(aggr) {
-        let acc;
-        for (let i of this.iterable) acc = !acc ? i : aggr(acc, i);
-        return acc;
+    /**
+     * Applies an aggregation function over the sequence.
+     * 
+     * @param {function(accumulator: *, current: *): *} processNext An aggregation
+     *     function that gets the accumulated value and the current element of the
+     *     sequence.
+     * 
+     * @param {*} [seed] The initial value of the accumulator. If it is not
+     *     specified, the first element of the sequence is used as the seed.
+     * 
+     * @param {function(result: *): *} [transformResult] A transformation that is
+     *     applied to the end result of the aggregation.
+     * 
+     * @throws {TypeError} if `process` is not a function
+     * @throws {TypeError} if `transformResult` is specified but is not a function
+     * @throws {RangeError} if the sequence is empty and no seed has been specified
+     * 
+     * @example
+     * // Add all numbers in the array. The first one is used as the seed.
+     * const numbers = [1, 2, 3],
+     *       sum = from(numbers).aggregate((a, b) => a + b);
+     * 
+     * console.log(sum); // 6
+     * 
+     * // Concatenate all strings in the array. Use a seed value.
+     * const animals = ["cat", "dog", "fish", "frog"],
+     *       list = from(animals).aggregate((a, b) => a + ", " + b, "Animals: ");
+     * 
+     * console.log(list); // Animals: cat, dog, fish, frog
+     * 
+     * // Use a transformation on the result
+     * const animals = ["cat", "dog", "fish", "frog"],
+     *       concatNext = (a, b) => a + ", " + b,
+     *       prefix = "Animals: ",
+     *       makeParagraph = x => "<p>" + x + "</p>",
+     *       paragraph = from(animals).aggregate(concatNext, prefix, makeParagraph);
+     * 
+     * console.log(paragraph);
+     * 
+     * // Output:
+     * //     <p>Animals: cat, dog, fish, frog</p>
+     */
+    aggregate(processNext, seed, transformResult = i => i) {
+        //
+        // This is way too long and hideously ugly. Needs to be heavily refactored.
+        //
+        // The reason it turned out this way is that I went out of my way to allow
+        // `processNext` to return `undefined` (though an `undefined` seed means no
+        // seed has been specified). It might have been a bad decision. 
+        //
+
+        if (transformResult !== undefined) {
+            // if specified, it should be a function
+            ensureIsFunction(transformResult, "`transformResult` should be a function");
+        }
+        ensureIsFunction(processNext, "`processNext` should be a function");
+
+        const iterator = this.iterable[Symbol.iterator]();
+        let result = iterator.next(),
+            accumulator = seed;
+            
+        if (result.done) {
+            if (seed !== undefined) {
+                return transformResult(seed);
+            }
+            throw new RangeError("The sequence is empty and no seed has been specified");
+        }
+        
+        if (seed === undefined) accumulator = result.value;
+        else accumulator = processNext(seed, result.value);
+
+        result = iterator.next();
+        
+        while(!result.done) {
+            accumulator = processNext(accumulator, result.value);
+            result = iterator.next();
+        }
+        
+        return transformResult(accumulator);
     }
 
     average(select = n => n) {
