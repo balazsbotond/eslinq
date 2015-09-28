@@ -17,10 +17,8 @@ export const identity = n => n,
  */
 export class ThrowingIterable {
 	constructor() {
-		this[Symbol.iterator] = () => {
-			return {
-				next: () => { throw "This Iterable should not be iterated"; }
-			};
-		}
+		this[Symbol.iterator] = function* () {
+			throw "This Iterable should not be iterated";
+		} 
 	}
 }
