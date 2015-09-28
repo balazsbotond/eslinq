@@ -551,18 +551,7 @@ export class Sequence {
      * //     <p>Animals: cat, dog, fish, frog</p>
      */
     aggregate(processNext, seed, transformResult = i => i) {
-        //
-        // This is way too long and hideously ugly. Needs to be heavily refactored.
-        //
-        // The reason it turned out this way is that I went out of my way to allow
-        // `processNext` to return `undefined` (though an `undefined` seed means no
-        // seed has been specified). It might have been a bad decision. 
-        //
-
-        if (transformResult !== undefined) {
-            // if specified, it should be a function
-            ensureIsFunction(transformResult, "`transformResult` should be a function");
-        }
+        ensureIsFunction(transformResult, "`transformResult` should be a function");
         ensureIsFunction(processNext, "`processNext` should be a function");
 
         const iterator = this.iterable[Symbol.iterator]();
@@ -570,9 +559,7 @@ export class Sequence {
             accumulator = seed;
             
         if (result.done) {
-            if (seed !== undefined) {
-                return transformResult(seed);
-            }
+            if (seed !== undefined) return transformResult(seed);
             throw new RangeError("The sequence is empty and no seed has been specified");
         }
         
