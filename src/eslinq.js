@@ -450,7 +450,25 @@ export class Sequence {
      * for (let i of u) console.log(i); // 1 2 3 4 5
      */
     union(other) {
-        return new Sequence(this.iterable).concat(other).distinct();
+        ensureIsIterable(other, "`other` should be iterable");
+        
+        const generator = function* () {
+            const seen = new Set();
+            for (let i of this.iterable) {
+                if (!seen.has(i)) {
+                    seen.add(i);
+                    yield i;
+                }
+            }
+            for (let i of other) {
+                if (!seen.has(i)) {
+                    seen.add(i);
+                    yield i;
+                }
+            }
+        };
+        
+        return this._wrap(generator);
     }
 
     /*
@@ -1289,6 +1307,7 @@ function ensureIsFunction(f, message) {
 }
 
 function ensureIsIterable(i, message) {
+    ensureIsDefined(i, message);
     const iter = i[Symbol.iterator];
     ensureIsDefined(iter, message);
     ensureIsFunction(iter, message);
