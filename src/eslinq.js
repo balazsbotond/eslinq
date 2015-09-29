@@ -419,22 +419,32 @@ export class Sequence {
      * Returns the elements both iterables (this and `other`) contain.
      * 
      * @param {Iterable} other The iterable to intersect the current one with.
+     * 
      * @return {Sequence} The elements both iterables contain.
+     * 
+     * @throws {TypeError} if `other` is not iterable.
      * 
      * @example
      * const a = [1, 2, 3],
-     *       b = [2, 3, 4],
+     *       b = [2, 3, 4, 3],
      *       i = from(a).intersect(b);
+     * 
      * for (let n of i) console.log(i); // 2 3
      */
     intersect(other) {
-        const iterable = this.iterable;
-        other = new Sequence(other);
-        return this._wrap(function* () {
-            // TODO: this is a very naive implementation. We should build
-            // a set from `other` and use that for the lookup.
-           for (let i of iterable) if (other.contains(i)) yield i;
-        });
+        ensureIsIterable(other, "`other` should be iterable");
+        
+        const generator = function* () {
+            const seen = new Set(other);
+
+            for (let i of this.iterable) {
+                if (seen.has(i)) {
+                    yield i;
+                }
+            }
+        };
+        
+        return this._wrap(generator);
     }
 
     /**
