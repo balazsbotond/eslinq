@@ -200,7 +200,7 @@ export class Sequence {
                 
                 index++;
             }
-        }
+        };
 
         return this._wrap(generator);
     }
@@ -246,7 +246,7 @@ export class Sequence {
                 }
                 index++;
             }
-        }
+        };
 
         return this._wrap(generator);
     }
@@ -323,7 +323,7 @@ export class Sequence {
      * from(numbers).any(isOdd); // true
      * from(even).any(isOdd); // false
      */
-    any(matches = _ => true) {
+    any(matches = constantTrue) {
         ensureIsFunction(matches, "`matches` should be a function");
 
         for (let i of this.iterable) {
@@ -518,9 +518,9 @@ export class Sequence {
      * ECMAScript comparison operators).
      */
      orderBy(get, compare = compareDefault) {
-        let result = Array.from(this.iterable);
-        result.sort((a, b) => compare(get(a), get(b)));
-        return new Sequence(result);
+         let result = Array.from(this.iterable);
+         result.sort((a, b) => compare(get(a), get(b)));
+         return new Sequence(result);
      }
 
     /**
@@ -531,16 +531,16 @@ export class Sequence {
      * ECMAScript comparison operators).
      */
      orderByDescending(get, compare = compareDefault) {
-        let result = Array.from(this.iterable);
-        result.sort((a, b) => compare(get(b), get(a)));
-        return new Sequence(result);
+         let result = Array.from(this.iterable);
+         result.sort((a, b) => compare(get(b), get(a)));
+         return new Sequence(result);
      }
 
      reverse() {
-        const array = Array.from(this.iterable);
-        return this._wrap(function* () {
-            for (let i = array.length - 1; i >= 0; i--) yield array[i];
-        });
+         const array = Array.from(this.iterable);
+         return this._wrap(function* () {
+             for (let i = array.length - 1; i >= 0; i--) yield array[i];
+         });
      }
 
     /*
@@ -603,7 +603,7 @@ export class Sequence {
      * // Output:
      * //     <p>Animals: cat, dog, fish, frog</p>
      */
-    aggregate(processNext, seed, transformResult = i => i) {
+    aggregate(processNext, seed, transformResult = identity) {
         ensureIsFunction(transformResult, "`transformResult` should be a function");
         ensureIsFunction(processNext, "`processNext` should be a function");
 
@@ -629,7 +629,7 @@ export class Sequence {
         return transformResult(accumulator);
     }
 
-    average(select = n => n) {
+    average(select = identity) {
         let sum = 0, count = 0;
         for (let i of this.iterable) {
             ensureIsNumber(i, "Only numbers can be averaged");
@@ -639,7 +639,7 @@ export class Sequence {
         return sum / count;
     }
     
-    sum(select = n => n) {
+    sum(select = identity) {
         let sum;
         for (let i of this.iterable) {
             ensureIsNumber(i, "Only numbers can be summed");
@@ -701,7 +701,7 @@ export class Sequence {
                 this.iterable instanceof Map) {
                 return this.iterable.size;
             }
-            matches = _ => true;
+            matches = identity;
         } else {
             ensureIsFunction(matches, "`matches` should be a function");
         }
@@ -737,7 +737,7 @@ export class Sequence {
     _elementAt(index) {
         let i = 0;
         for (let item of this.iterable) {
-            if (i === index) return i;
+            if (i === index) return item;
             i++;
         }
         return undefined;
@@ -773,7 +773,7 @@ export class Sequence {
      * 
      * console.log(firstEven); // 2
      */
-    first(matches = _ => true) {
+    first(matches = constantTrue) {
         ensureIsFunction(matches, "`matches` should be a function");
 
         for (let i of this.iterable) {
@@ -822,7 +822,7 @@ export class Sequence {
      * const numbers = [1, 3, 5];
      * console.log(from(numbers).firstOrDefault(0, n => n % 2 === 0)); // Output: 0
      */
-    firstOrDefault(defaultValue, matches = _ => true) {
+    firstOrDefault(defaultValue, matches = constantTrue) {
         ensureIsFunction(matches, "`matches` should be a function");
 
         for (let i of this.iterable) {
@@ -864,7 +864,7 @@ export class Sequence {
      * 
      * console.log(lastEven); // 4
      */
-    last(matches = _ => true) {
+    last(matches = constantTrue) {
         ensureIsFunction(matches, "`matches` should be a function");
         
         const { found, item } = this._last(matches);
@@ -912,7 +912,7 @@ export class Sequence {
      * const numbers = [1, 3, 5, 7];
      * console.log(from(numbers).lastOrDefault(0, n => n % 2 === 0)); // Output: 0
      */
-    lastOrDefault(defaultValue, matches = _ => true) {
+    lastOrDefault(defaultValue, matches = constantTrue) {
         ensureIsFunction(matches, "`matches` should be a function");
 
         const { found, item } = this._last(matches);
@@ -920,7 +920,7 @@ export class Sequence {
         return found ? item : defaultValue;
     }
     
-    _last(matches = _ => true) {
+    _last(matches = constantTrue) {
         let found = false, item;
 
         for (let i of this.iterable) {
@@ -979,7 +979,7 @@ export class Sequence {
      * // than one matching element
      * const even = from(numbers).single(even);
      */
-    single(matches = _ => true) {
+    single(matches = constantTrue) {
         ensureIsFunction(matches, "`matches` should be a function");
         
         const { found, item } = this._single(matches);
@@ -1038,7 +1038,7 @@ export class Sequence {
      * // BOOM! This throws a `RangeError`:
      * console.log(from(numbers).singleOrDefault(0, n => n % 2 === 0));
      */
-    singleOrDefault(defaultValue, matches = _ => true) {
+    singleOrDefault(defaultValue, matches = constantTrue) {
         ensureIsFunction(matches, "`matches` should be a function");
         
         const { found, item } = this._single(matches);
@@ -1050,7 +1050,7 @@ export class Sequence {
         return item;
     }
     
-    _single(matches = _ => true) {
+    _single(matches = constantTrue) {
         let found = false, item;
 
         for (let i of this.iterable) {
@@ -1303,9 +1303,11 @@ export class Sequence {
     static _wrap(generator) {
         return new Sequence({ [Symbol.iterator]: generator });
     }
-
+    
     _log() {
+        /* eslint-disable no-console */
         for (let i of this.iterable) console.log(i);
+        /* eslint-enable no-console */
     }
 }
 
@@ -1318,6 +1320,9 @@ function compareDefault(a, b) {
     if (a > b) return 1;
     return 0;
 }
+
+function identity(n) { return n; }
+function constantTrue() { return true; }
 
 /*
  * Argument validation helpers
