@@ -386,10 +386,22 @@ export class Sequence {
      * @example
      * const numbers = [1, 1, 1, 2, 3, 4, 3],
      *       noDupl = from(numbers).distinct();
+     * 
      * for (let n of noDupl) console.log(n); // 1 2 3 4
      */
     distinct() {
-        return new Sequence(new Set(this.iterable));
+        const generator = function* () {
+            const seen = new Set();
+            
+            for (let i of this.iterable) {
+                if (!seen.has(i)) {
+                    seen.add(i);
+                    yield i;
+                }
+            }
+        };
+        
+        return this._wrap(generator);
     }
 
     /**
@@ -416,7 +428,7 @@ export class Sequence {
     }
 
     /**
-     * Returns the elements both iterables (this and `other`) contain.
+     * Returns the distinct elements both iterables (this and `other`) contain.
      * 
      * @param {Iterable} other The iterable to intersect the current one with.
      * 
