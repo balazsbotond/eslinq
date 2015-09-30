@@ -408,23 +408,34 @@ export class Sequence {
      * Returns all elements of the iterable except the ones in `other`.
      * 
      * @param {Iterable} other The iterable to be subtracted.
+     * 
      * @return {Sequence} All elements of the iterable except the ones
      *     in `other`.
+     * 
+     * @throws {TypeError}
      * 
      * @example
      * const numbers = [1, 2, 3, 4, 5],
      *       exceptions = [3, 4],
      *       difference = from(numbers).except(exceptions);
+     * 
      * for (let n of difference) console.log(n); // 1 2 5
      */
     except(other) {
-        const iterable = this.iterable;
-        other = new Sequence(other);
-        return this._wrap(function* () {
-            // TODO: this is a very naive implementation. We should build
-            // a set from `other` and use that for the lookup.
-            for (let i of iterable) if (!other.contains(i)) yield i;
-        });
+        ensureIsIterable(other, "`other` should be iterable");
+        
+        const generator = function* () {
+            const seen = new Set(other);
+            
+            for (let i of this.iterable) {
+                if (!seen.has(i)) {
+                    seen.add(i);
+                    yield i;
+                }
+            } 
+        };
+        
+        return this._wrap(generator); 
     }
 
     /**
