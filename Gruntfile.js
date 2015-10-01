@@ -26,7 +26,7 @@ module.exports = function(grunt) {
         watch: {
             scripts: {
                 files: ["src/**/*.js", "spec/**/*.js"],
-                tasks: ["exec:test"]
+                tasks: ["test"]
             }
         },
         
@@ -36,17 +36,25 @@ module.exports = function(grunt) {
                     { expand: true, cwd: "out/src", src: ["**/*.js"], dest: "dist" }
                 ]
             }
+        },
+        
+        eslint: {
+            target: [
+                "src/**/*.js",
+                "spec/**/*.js"
+            ]
         }
 
     });
 
     grunt.loadNpmTasks("grunt-babel");
     grunt.loadNpmTasks('grunt-exec');
+    grunt.loadNpmTasks('grunt-eslint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
 
-    grunt.registerTask("default", ["exec:test", "babel", "copy"]);
-    grunt.registerTask("test", ["exec:test"]);
+    grunt.registerTask("default", ["exec:test", "eslint", "babel", "copy"]);
+    grunt.registerTask("test", ["exec:test", "eslint"]);
     grunt.registerTask("publish", ["default", "exec:publish"]);
 
 };
