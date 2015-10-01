@@ -65,6 +65,11 @@ export default function from(iterable) {
  * @implements {Iterable}
  */
 export class Sequence {
+    /**
+     * Creates a new `Sequence` instance wrapping the `iterable` specified.
+     * 
+     * @param {Iterable} The `Iterable` to wrap.
+     */
     constructor(iterable) {
         this.iterable = iterable;
         this[Symbol.iterator] = iterable[Symbol.iterator];
