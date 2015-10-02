@@ -27,16 +27,18 @@ engines:
 
 # Note: If the ratings key is not specified, this will result in a 0.0 GPA on your dashboard.
 
-# ratings:
-#   paths:
-#   - app/**
-#   - lib/**
-#   - "**.rb"
-#   - "**.go"
+ratings:
+  paths:
+  - src/**
+  - spec/**
 
 # You can globally exclude files from being analyzed by any engine using the
 # exclude_paths key.
 
-#exclude_paths:
-#- spec/**/*
-#- vendor/**/*
+exclude_paths:
+- "Gruntfile.js"
+- "LICENSE"
+- "README.md"
+- "esdoc.json"
+- "jsconfig.json"
+- "package.json"
