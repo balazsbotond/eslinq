@@ -978,7 +978,7 @@ export class Sequence {
         const { found, item } = this._last(matches);
 
         if (!found) {
-            throw RangeError("No matching element found");
+            throw new RangeError("No matching element found");
         }
         return item;
     }
@@ -1093,7 +1093,7 @@ export class Sequence {
         const { found, item } = this._single(matches);
 
         if (!found) {
-            throw RangeError("No matching element found");
+            throw new RangeError("No matching element found");
         }
         return item;
     }
@@ -1164,7 +1164,7 @@ export class Sequence {
         for (let i of this.iterable) {
             if (matches(i)) {
                 if (found) {
-                    throw RangeError("Sequence contains more than one matching element");
+                    throw new RangeError("Sequence contains more than one matching element");
                 }
                 item = i;
                 found = true;
