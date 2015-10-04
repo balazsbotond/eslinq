@@ -737,22 +737,59 @@ export class Sequence {
         return transformResult(accumulator);
     }
 
-    average(select = identity) {
+    average(getValue = identity) {
         let sum = 0, count = 0;
         for (let i of this.iterable) {
             ensureIsNumber(i, "Only numbers can be averaged");
-            sum += select(i);
+            sum += getValue(i);
             count++;
         }
         return sum / count;
     }
 
-    sum(select = identity) {
-        let sum;
+    /**
+     * Returns the sum of the elements of the sequence. If a `getValue`
+     * function is specified, it is called for each element of the
+     * sequence, and the return values are summed.
+     *
+     * @param {function(i: *): number} [getValue] A function that returns
+     *     the term to be summed for the current sequence element.
+     *
+     * @return The sum of the (matching) elements.
+     *
+     * @throws {TypeError} if the value returned by `getValue` is not
+     *     a number.
+     *
+     * @example
+     * // Without `getValue`
+     * console.log(
+     *     from([1, 2, 3]).sum()
+     * );
+     *
+     * // Output: 6
+     *
+     * // With `getValue`
+     * const employees = [
+     *     { name: "John Smith", salary: 15000 },
+     *     { name: "Jane Smith", salary: 26000 },
+     *     { name: "Jane Doe", salary: 15000 },
+     * ];
+     *
+     * const totalSalary = from(employees).sum(emp => emp.salary);
+     *
+     * console.log(totalSalary); // 56000
+     */
+    sum(getValue = identity) {
+        ensureIsFunction(getValue, "`getValue` should be a function");
+
+        let sum = 0;
+
         for (let i of this.iterable) {
-            ensureIsNumber(i, "Only numbers can be summed");
-            sum += select(i);
+            const value = getValue(i);
+            ensureIsNumber(value, "Only numbers can be summed");
+            sum += value;
         }
+
         return sum;
     }
 
