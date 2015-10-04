@@ -260,6 +260,109 @@ export class Sequence {
      * Join methods
      */
 
+    /**
+     * Performs a SQL-like join of two iterables.
+     *
+     * The `getOuterKey` and `getInnerKey` functions are used to determine the
+     * join key for an element of the outer and the inner sequence, respectively.
+     * The resulting pairs of elements can be transformed using the optional
+     * `transform` function. If `transform` is not specified, `join` returns a
+     * sequence of two-element arrays where the element at index 0 is from the
+     * first sequence and the one at index 1 is from the second.
+     *
+     * @param {Sequence} inner The inner sequence.
+     * @param {function(i: *): *} getOuterKey Returns the join key to be used for
+     *     the current element of the outer sequence.
+     * @param {function(i: *): *} getInnerKey Returns the join key to be used for
+     *     the current element of the inner sequence.
+     * @param {function(outer: *, inner: *): *} [transform] A transformation to be
+     *     applied to the resulting pairs of elements.
+     *
+     * @return {*} If `transform` is not specified, a sequence of two-element
+     *     arrays where the element at index 0 is from the first sequence and the
+     *     one at index 1 is from the second. If `transform` is specified, a
+     *     sequence of the output of `transform` applied to the outer and inner
+     *     elements.
+     *
+     * @throws {TypeError} if `inner` is not iterable. If either `getOuterKey` or
+     *     `getInnerKey` is not a function. If `transform` is specified but it is
+     *     not a function.
+     *
+     * @example
+     * const users = [
+     *     { id: 1, name: "Jane Smith" },
+     *     { id: 2, name: "John Smith" },
+     *     { id: 3, name: "Mary Brown" }
+     * ];
+     *
+     * const emails = [
+     *     { user_id: 1, address: "jane.smith@example.com" },
+     *     { user_id: 1, address: "jsmith@gmail.com" },
+     *     { user_id: 3, address: "mary789@yahoo.com" }
+     * ];
+     *
+     * //
+     * // First example: no `transform` function
+     * //
+     *
+     * const usersWithEmails =
+     *     from(users)
+     *         .join(emails, user => user.id, email => email.user_id);
+     *
+     * for (let uwe of usersWithEmails) {
+     *     console.log(uwe[0].name + ": " + uwe[1]);
+     * }
+     *
+     * // Output:
+     * //     Jane Smith: jane.smith@example.com
+     * //     Jane Smith: jsmith@gmail.com
+     * //     Mary Brown: mary789@yahoo.com
+     *
+     * //
+     * // Second example: using a `transform` function
+     * //
+     *
+     * const userNamesWithEmails =
+     *     from(users)
+     *         .join(emails,
+     *             user => user.id,
+     *             email => email.user_id,
+     *             (user, email) => user.name + ": " + email.address);
+     *
+     * for (let uwe of userNamesWithEmails) {
+     *     console.log(uwe);
+     * }
+     *
+     * // Output:
+     * //     Jane Smith: jane.smith@example.com
+     * //     Jane Smith: jsmith@gmail.com
+     * //     Mary Brown: mary789@yahoo.com
+     */
+    join(inner, getOuterKey, getInnerKey, transform = defaultJoinTransform) {
+        ensureIsIterable(inner, "`inner` should be iterable");
+        ensureIsFunction(getOuterKey, "`getOuterKey` should be a function");
+        ensureIsFunction(getInnerKey, "`getInnerKey` should be a function");
+        ensureIsFunction(transform, "`transform` should be a function");
+
+        const generator = function* () {
+            const lookup = new Sequence(inner).toLookup(getInnerKey);
+
+            for (let outer of this.iterable) {
+                const key = getOuterKey(outer);
+
+                if (!lookup.has(key)) {
+                    continue;
+                }
+
+                for (let inner of lookup.get(key)) {
+                    yield transform(outer, inner);
+                }
+            }
+        };
+
+        return this._wrap(generator);
+    }
+
     /*
      * Set methods
      */
@@ -1417,6 +1520,10 @@ function compareDefault(a, b) {
     if (a < b) return -1;
     if (a > b) return 1;
     return 0;
+}
+
+function defaultJoinTransform(outer, inner) {
+    return [outer, inner];
 }
 
 function identity(n) { return n; }
