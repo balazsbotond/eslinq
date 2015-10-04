@@ -1,9 +1,9 @@
 **Stats:**
 
 - Total: 46
-- Missing: 8
-- Incomplete: 14
-- Done: 24
+- Missing: 8 (17.4%)
+- Incomplete: 14 (30.4%)
+- Done: 24 (52.2%)
 
 **Legend:**
 
