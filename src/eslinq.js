@@ -1,7 +1,7 @@
 /*
  * ESLinq - LINQ for EcmaScript 2015
  *
- * An easy and elegant way of working with iterables.
+ * An elegant way of working with ES6 iterables.
  *
  * Full source code and examples:
  * http://github.com/balazsbotond/eslinq
@@ -75,9 +75,11 @@ export class Sequence {
         this[Symbol.iterator] = iterable[Symbol.iterator];
     }
 
-    /*
-     * Projection and restriction methods
-     */
+    //////////////////////////////////////////////////////////////////////////
+    //                                                                      //
+    // Projection and restriction methods                                   //
+    //                                                                      //
+    //////////////////////////////////////////////////////////////////////////
 
     /**
      * Applies the specified transformation to all elements of the
@@ -256,9 +258,11 @@ export class Sequence {
         return this._wrap(generator);
     }
 
-    /*
-     * Join methods
-     */
+    //////////////////////////////////////////////////////////////////////////
+    //                                                                      //
+    // Join methods                                                         //
+    //                                                                      //
+    //////////////////////////////////////////////////////////////////////////
 
     /**
      * Performs a SQL-like join of two iterables.
@@ -363,9 +367,11 @@ export class Sequence {
         return this._wrap(generator);
     }
 
-    /*
-     * Set methods
-     */
+    //////////////////////////////////////////////////////////////////////////
+    //                                                                      //
+    // Set methods                                                          //
+    //                                                                      //
+    //////////////////////////////////////////////////////////////////////////
 
     /**
      * Determines whether all elements satisfy a condition.
@@ -614,9 +620,11 @@ export class Sequence {
         return this._wrap(generator);
     }
 
-    /*
-     * Ordering methods
-     */
+    //////////////////////////////////////////////////////////////////////////
+    //                                                                      //
+    // Ordering methods                                                     //
+    //                                                                      //
+    //////////////////////////////////////////////////////////////////////////
 
     /**
      * Returns a new sequence that contains the elements of the original ordered by
@@ -651,9 +659,11 @@ export class Sequence {
          });
      }
 
-    /*
-     * Grouping methods
-     */
+    //////////////////////////////////////////////////////////////////////////
+    //                                                                      //
+    // Grouping methods                                                     //
+    //                                                                      //
+    //////////////////////////////////////////////////////////////////////////
 
     groupBy(getKey) {
         const map = new Map();
@@ -665,9 +675,11 @@ export class Sequence {
         return new Sequence(map);
     }
 
-    /*
-     * Aggregate methods
-     */
+    //////////////////////////////////////////////////////////////////////////
+    //                                                                      //
+    // Aggregate methods                                                    //
+    //                                                                      //
+    //////////////////////////////////////////////////////////////////////////
 
     /**
      * Applies an aggregation function over the sequence.
@@ -862,9 +874,11 @@ export class Sequence {
         return count;
     }
 
-    /*
-     * Paging methods
-     */
+    //////////////////////////////////////////////////////////////////////////
+    //                                                                      //
+    // Paging methods                                                       //
+    //                                                                      //
+    //////////////////////////////////////////////////////////////////////////
 
     elementAt(index) {
         ensureIsNotNegative(index, "`index` should not be negative");
@@ -1319,9 +1333,11 @@ export class Sequence {
         });
     }
 
-    /*
-     * Factory methods
-     */
+    //////////////////////////////////////////////////////////////////////////
+    //                                                                      //
+    // Factory methods                                                      //
+    //                                                                      //
+    //////////////////////////////////////////////////////////////////////////
 
     /**
      * Returns an empty `Sequence`.
@@ -1429,9 +1445,11 @@ export class Sequence {
         return Sequence._wrap(generator);
     }
 
-    /*
-     * Conversion methods
-     */
+    //////////////////////////////////////////////////////////////////////////
+    //                                                                      //
+    // Conversion methods                                                   //
+    //                                                                      //
+    //////////////////////////////////////////////////////////////////////////
 
     toArray() {
         return Array.from(this.iterable);
@@ -1530,9 +1548,11 @@ export class Sequence {
         return lookup;
     }
 
-    /*
-     * Private helpers
-     */
+    //////////////////////////////////////////////////////////////////////////
+    //                                                                      //
+    // Private helpers                                                      //
+    //                                                                      //
+    //////////////////////////////////////////////////////////////////////////
 
     _wrap(generator) {
         return new Sequence({ [Symbol.iterator]: generator.bind(this) });
@@ -1549,9 +1569,11 @@ export class Sequence {
     }
 }
 
-/*
- * Functions used as default arguments
- */
+//////////////////////////////////////////////////////////////////////////
+//                                                                      //
+// Functions used as default arguments                                  //
+//                                                                      //
+//////////////////////////////////////////////////////////////////////////
 
 function compareDefault(a, b) {
     if (a < b) return -1;
@@ -1566,9 +1588,11 @@ function defaultJoinTransform(outer, inner) {
 function identity(n) { return n; }
 function constantTrue() { return true; }
 
-/*
- * Argument validation helpers
- */
+//////////////////////////////////////////////////////////////////////////
+//                                                                      //
+// Argument validation helpers                                          //
+//                                                                      //
+//////////////////////////////////////////////////////////////////////////
 
 function ensureIsNumber(n, message) {
     if (typeof n !== "number") {
