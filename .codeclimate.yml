@@ -17,6 +17,13 @@ engines:
 # to turn off an engine, set enabled to `false` or remove it
   eslint:
     enabled: true
+    checks:
+      global-strict:
+        enabled: false
+      no-use-before-define:
+        enabled: false
+      no-underscore-dangle:
+        enabled: false
 
 # Engines can analyze files and report issues on them, but you can separately
 # decide which files will receive ratings based on those issues. This is

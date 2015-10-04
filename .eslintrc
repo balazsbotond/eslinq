@@ -15,6 +15,9 @@
         "semi": [
             2,
             "always"
+        ],
+        "new-cap": [
+            2
         ]
     },
     "env": {
