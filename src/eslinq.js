@@ -749,13 +749,60 @@ export class Sequence {
         return transformResult(accumulator);
     }
 
+    /**
+     * Calculates the average (arithmetic mean) of the elements of the sequence.
+     *
+     * **Evaluation:** eager
+     *
+     * @param {function(i: *): *} [getValue] A function to determine the value
+     *     to include in the average for the current element.
+     *
+     * @return {number} The average of the elements.
+     *
+     * @throws {TypeError} if `getValue` is not a function. If the current
+     *     element, or if `getValue` is used, the value returned by it, is not
+     *     a number.
+     *
+     * @throws {RangeError} if the sequence is empty.
+     *
+     * @example
+     * // Fist example: simple average
+     * console.log(
+     *     from([1, 2, 3]).average()
+     * );
+     *
+     * // Output: 2
+     *
+     * // Second example: using the `getValue` function
+     * const employees = [
+     *     { id: 1, salary: 20000 },
+     *     { id: 2, salary: 30000 },
+     *     { id: 3, salary: 40000 }
+     * ];
+     *
+     * console.log(
+     *     from(employees).average(emp => emp.salary);
+     * );
+     *
+     * // Output: 30000
+     */
     average(getValue = identity) {
-        let sum = 0, count = 0;
+        ensureIsFunction(getValue, "`getValue` should be a function");
+
+        let sum = 0,
+            count = 0;
+
         for (let i of this.iterable) {
-            ensureIsNumber(i, "Only numbers can be averaged");
-            sum += getValue(i);
+            const value = getValue(i);
+            ensureIsNumber(value, "Only numbers can be averaged");
+            sum += value;
             count++;
         }
+
+        if (count === 0) {
+            throw new RangeError("Sequence was empty");
+        }
+
         return sum / count;
     }
 

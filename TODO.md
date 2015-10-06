@@ -50,10 +50,10 @@
 - [ ] ThenBy
 - [ ] ThenByDescending
 - [ ] *Reverse
-- [ ] *Sum
+- [X] Sum
 - [ ] Min
 - [ ] Max
-- [ ] *Average
+- [X] Average
 - [ ] *ElementAt
 - [ ] *ElementAtOrDefault
 - [ ] *Contains
