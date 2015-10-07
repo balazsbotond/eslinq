@@ -927,26 +927,70 @@ export class Sequence {
     //                                                                      //
     //////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Returns the element at the specified zero-based index.
+     *
+     * **Evaluation:** eager
+     *
+     * **Complexity:** O(1) for `Array`s, O(n) for other iterables.
+     *
+     * @param {number} index The non-negative integer index of the element to
+     *     return.
+     * 
+     * @return {*} The element of the sequence at the specified index.
+     *
+     * @throws {RangeError} if `index` is negative. If `index` is too large.
+     *
+     * @example
+     * const numbers = [1, 2, 3];
+     *
+     * console.log(from(numbers).elementAt(2)); // Output: 3
+     */
     elementAt(index) {
+        ensureIsNumber(index, "`index` should be a number");
         ensureIsNotNegative(index, "`index` should not be negative");
-        const element = this._elementAt(index);
-        ensureIsDefined(element, "Index too large");
+
+        const { element, exhausted } = this._elementAt(index);
+
+        if (exhausted) {
+            throw new RangeError("Index too large");
+        }
+
         return element;
     }
 
     elementAtOrDefault(index, defaultValue) {
         ensureIsNotNegative(index, "`index` should not be negative");
-        const element = this._elementAt(index);
-        return element !== undefined ? element : defaultValue;
+
+        const { element, exhausted } = this._elementAt(index);
+
+        return exhausted ? defaultValue : element;
     }
 
     _elementAt(index) {
+        const exhaustedResult = { element: undefined, exhausted: true },
+            valueResult = v => { return { element: v, exhausted: false }; };
+
+        // O(1) optimization for arrays
+        if (this.iterable instanceof Array) {
+            if (index >= this.iterable.length) {
+                return exhaustedResult;
+            } else {
+                return valueResult(this.iterable[index]);
+            }
+        }
+
+        // O(n) algorithm for other iterables
         let i = 0;
+
         for (let item of this.iterable) {
-            if (i === index) return item;
+            if (i === index) {
+                return valueResult(item);
+            }
             i++;
         }
-        return undefined;
+
+        return exhaustedResult;
     }
 
     /**
