@@ -10,8 +10,9 @@ to ECMAScript 2015 (ES6).
 
 [API Documentation](https://doc.esdoc.org/github.com/balazsbotond/eslinq/)
 
-[![API Documentation Coverage](https://doc.esdoc.org/github.com/balazsbotond/eslinq/badge.svg?pleaseWork)](https://doc.esdoc.org/github.com/balazsbotond/eslinq)
 [![Build Status](https://travis-ci.org/balazsbotond/eslinq.svg?branch=master)](https://travis-ci.org/balazsbotond/eslinq)
+[![Code Climate](https://codeclimate.com/github/balazsbotond/eslinq/badges/gpa.svg)](https://codeclimate.com/github/balazsbotond/eslinq)
+[![API Documentation Coverage](https://doc.esdoc.org/github.com/balazsbotond/eslinq/badge.svg?pleaseWork)](https://doc.esdoc.org/github.com/balazsbotond/eslinq)
 
 A first example
 ---------------
@@ -64,7 +65,7 @@ and transformation is only done once we start iterating it, e. g. with a `for..o
 ```javascript
 for (let email of verifiedUserEmails) {
 	// The first time this loop executes is the first time the original iterable is read from.
-	// Filtering (`where`) and transformation (`selectMany`) run element-by-element during iteration. 
+	// Filtering (`where`) and transformation (`selectMany`) run element-by-element during iteration.
 	console.log(email);
 }
 ```
