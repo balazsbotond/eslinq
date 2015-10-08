@@ -936,7 +936,7 @@ export class Sequence {
      *
      * @param {number} index The non-negative integer index of the element to
      *     return.
-     * 
+     *
      * @return {*} The element of the sequence at the specified index.
      *
      * @throws {RangeError} if `index` is negative. If `index` is too large.
@@ -959,7 +959,34 @@ export class Sequence {
         return element;
     }
 
+    /**
+     * Returns the element at the specified zero-based index, or a user-
+     * specified default value.
+     *
+     * **Evaluation:** eager
+     *
+     * **Complexity:** O(1) for `Array`s, O(n) for other iterables.
+     *
+     * @param {number} index The non-negative integer index of the element to
+     *     return.
+     * @param {*} [defaultValue] The default value to return if the index is
+     *     out of bounds. If not specified, `undefined` is used as the
+     *     default.
+     *
+     * @return {*} The element of the sequence at the specified index, or the
+     *     default value if the index is out of bounds of the sequence.
+     *
+     * @throws {RangeError} if `index` is negative. If `index` is too large.
+     *
+     * @example
+     * const numbers = [1, 2, 3];
+     *
+     * console.log(from(numbers).elementAtOrDefault(2)); // Output: 3
+     * console.log(from(numbers).elementAtOrDefault(3)); // Output: undefined
+     * console.log(from(numbers).elementAtOrDefault(false)); // Output: false
+     */
     elementAtOrDefault(index, defaultValue) {
+        ensureIsNumber(index, "`index` should be a number");
         ensureIsNotNegative(index, "`index` should not be negative");
 
         const { element, exhausted } = this._elementAt(index);

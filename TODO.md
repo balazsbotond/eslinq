@@ -1,11 +1,11 @@
 **Stats:**
 
-    [##########################============--------]
+    [############################==========--------]
 
 - Total: 46
 - `-` Missing: 8 (17.4%)
-- `=` Incomplete: 12 (26.1%)
-- `#` Done: 26 (56.5%)
+- `=` Incomplete: 10 (21.7%)
+- `#` Done: 28 (60.9%)
 
 **Legend:**
 
@@ -56,8 +56,8 @@
 - [ ] Min
 - [ ] Max
 - [X] Average
-- [ ] *ElementAt
-- [ ] *ElementAtOrDefault
+- [X] ElementAt
+- [X] ElementAtOrDefault
 - [ ] *Contains
 - [ ] SequenceEqual
 - [ ] Zip
