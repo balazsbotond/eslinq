@@ -1,11 +1,11 @@
 **Stats:**
 
-    [############################==========--------]
+    [#############################==========-------]
 
 - Total: 46
-- `-` Missing: 8 (17.4%)
+- `-` Missing: 7 (15.2%)
 - `=` Incomplete: 10 (21.7%)
-- `#` Done: 28 (60.9%)
+- `#` Done: 29 (63.0%)
 
 **Legend:**
 
@@ -53,7 +53,7 @@
 - [ ] ThenByDescending
 - [ ] *Reverse
 - [X] Sum
-- [ ] Min
+- [X] Min
 - [ ] Max
 - [X] Average
 - [X] ElementAt

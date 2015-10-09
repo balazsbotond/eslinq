@@ -921,6 +921,90 @@ export class Sequence {
         return count;
     }
 
+    /**
+     * Returns the minimum value in the sequence.
+     *
+     * If a `transform` function is specified, the transformation is invoked
+     * for each element of the sequence and the minimum of the transformed
+     * values is returned. By default, `min` uses the standard ECMAScript
+     * `<` and `>` operators for comparison, but that behavior can be
+     * customized by specifying a `compare` function.
+     *
+     * @param {function(i: *): *} [transform] A transformation to be applied
+     *     to each element of the sequence. If specified, the minimum of the
+     *     transformed values is returned.
+     * @param {function(a: *, b: *): number} [compare] A function that
+     *     returns a negative number if its first argument is less than the
+     *     second, a positive number if its first argument is greater than
+     *     the second, otherwise, 0.
+     *
+     * @return {*} The minimum value in the sequence.
+     *
+     * @throws {TypeError} if either `transform` or `compare` is not a
+     *     function.
+     * @throws {RangeError} if the sequence is empty.
+     *
+     * @example
+     * // Called with no arguments
+     * const numbers = [20, 35, -12, 0, 4, -7];
+     * console.log(from(numbers).min()); // Output: -12
+     *
+     * // Using a transformation
+     * const people = [
+     *     { name: "Jennifer", age: 23 },
+     *     { name: "John", age: 33 },
+     *     { name: "Jack", age: 42 },
+     *     { name: "Jill", age: 18 },
+     *     { name: "Bob", age: 20 }
+     * ];
+     *
+     * console.log(from(people).min(p => p.age));
+     *
+     * // Output:
+     * //     { name: "Jill", age: 18 }
+     *
+     * // Using a transformation and a custom comparer
+     * const people = [
+     *     { name: "Jennifer", age: 23 },
+     *     { name: "John", age: 33 },
+     *     { name: "Jack", age: 42 },
+     *     { name: "Jill", age: 18 },
+     *     { name: "Bob", age: 20 }
+     * ];
+     *
+     * const compareLength = (a, b) => a.length - b.length;
+     *
+     * console.log(
+     *     from(people).min(p => p.name, compareLength);
+     * );
+     *
+     * // Output:
+     * //     { name: "Bob", age: 20 }
+     */
+    min(transform = identity, compare = compareDefault) {
+        ensureIsFunction(transform, "`transform` should be a function");
+        ensureIsFunction(compare, "`compare` should be a function");
+
+        const iterator = this.iterable[Symbol.iterator]();
+        let current = iterator.next();
+
+        if (current.done) {
+            throw new RangeError("Sequence was empty");
+        }
+
+        let min = current.value;
+        current = iterator.next();
+
+        while (!current.done) {
+            if (compare(current.value, min) < 0) {
+                min = current.value;
+            }
+            current = iterator.next();
+        }
+
+        return min;
+    }
+
     //////////////////////////////////////////////////////////////////////////
     //                                                                      //
     // Paging methods                                                       //
