@@ -930,6 +930,8 @@ export class Sequence {
      * `<` and `>` operators for comparison, but that behavior can be
      * customized by specifying a `compare` function.
      *
+     * **Evaluation:** eager
+     *
      * @param {function(i: *): *} [transform] A transformation to be applied
      *     to each element of the sequence. If specified, the minimum of the
      *     transformed values is returned.
