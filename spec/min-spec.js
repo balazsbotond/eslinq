@@ -32,7 +32,7 @@ describe(".min", () => {
     it("uses the `transform` function", () => {
         expect(
             from(["aa", "a", "aaa"]).min(s => s.length)
-        ).toBe("a");
+        ).toBe(1);
     });
 
     it("uses the `compare` function", () => {
